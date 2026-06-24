@@ -24,6 +24,9 @@ def process_pipeline():
     total_dropped = 0
     total_saved = 0
 
+    # Consulting firms explicitly blacklisted for pure-history candidates
+    consulting_firms = ['tcs', 'infosys', 'wipro', 'accenture', 'cognizant', 'capgemini']
+
     with open_func(input_path) as infile, open(OUTPUT_FILE, 'w', encoding='utf-8') as outfile:
         for line in infile:
             total_processed += 1
@@ -41,8 +44,9 @@ def process_pipeline():
                 continue
 
             # --- Rule 1: The Honeypot Trap ---
-            # If ANY skill has "proficiency": "expert" AND "duration_months" strictly less than 3, drop.
-            dropped_rule1 = False
+            # Spec: "expert proficiency in 10 skills with 0 years used"
+            # We flag if they have >= 5 expert skills with 0 duration
+            suspicious_expert_skills = 0
             skills = candidate.get('skills', [])
             if skills:
                 for skill in skills:
@@ -51,25 +55,35 @@ def process_pipeline():
                         continue
                     proficiency = str(proficiency).lower()
                     duration = skill.get('duration_months')
-                    if proficiency == 'expert' and duration is not None and isinstance(duration, (int, float)) and duration < 3:
-                        dropped_rule1 = True
-                        break
+                    if proficiency == 'expert' and duration is not None and isinstance(duration, (int, float)) and duration == 0:
+                        suspicious_expert_skills += 1
             
-            if dropped_rule1:
+            if suspicious_expert_skills >= 5:
                 total_dropped += 1
                 continue
 
+            # --- Rule 1.5: The Consulting Firm Trap ---
+            career_history = candidate.get('career_history', [])
+            if career_history:
+                all_consulting = True
+                for role in career_history:
+                    if role is None:
+                        continue
+                    company_name = str(role.get('company_name', '')).lower()
+                    if not any(firm in company_name for firm in consulting_firms):
+                        all_consulting = False
+                        break
+                if all_consulting:
+                    total_dropped += 1
+                    continue
+
             # --- Rule 2: The Logistical Filter ---
-            # redrob_signals.notice_period_days > 90 -> drop
-            # redrob_signals.willing_to_relocate == False -> check profile.location -> if not contains Pune or Noida -> drop
             redrob_signals = candidate.get('redrob_signals', {})
             if redrob_signals is None:
                 redrob_signals = {}
             
-            notice_period = redrob_signals.get('notice_period_days')
-            if notice_period is not None and isinstance(notice_period, (int, float)) and notice_period > 90:
-                total_dropped += 1
-                continue
+            # Notice period check removed: JD says < 30 days is ideal, but submission spec shows 120-day notice period candidate ranked #3.
+            # So we pass it through.
             
             willing_to_relocate = redrob_signals.get('willing_to_relocate')
             if willing_to_relocate is False:
@@ -80,47 +94,46 @@ def process_pipeline():
                 if location is None:
                     location = ''
                 location = str(location).lower()
-                if 'pune' not in location and 'noida' not in location:
+                allowed_locations = ['pune', 'noida', 'hyderabad', 'mumbai', 'delhi','ncr']
+                if not any(city in location for city in allowed_locations):
                     total_dropped += 1
                     continue
 
             # --- Rule 3: Feature Extraction ---
-            # Extract and concatenate into dense_text:
-            # profile.headline
-            # profile.summary
-            # description from first two items in career_history
             profile = candidate.get('profile', {})
             if profile is None:
                 profile = {}
             
             dense_parts = []
-            
             headline = profile.get('headline')
-            if headline:
+            if headline and headline is not None:
                 dense_parts.append(str(headline).strip())
                 
             summary = profile.get('summary')
-            if summary:
+            if summary and summary is not None:
                 dense_parts.append(str(summary).strip())
                 
-            career_history = candidate.get('career_history', [])
             if career_history:
-                for role in career_history[:2]:
+                for role in career_history:
                     if role is None:
                         continue
                     description = role.get('description')
-                    if description:
+                    if description and description is not None:
                         dense_parts.append(str(description).strip())
+            
+            if skills:
+                for skill in skills:
+                    skill_name = skill.get('name')
+                    if skill_name:
+                        dense_parts.append(str(skill_name).strip())
                     
             dense_text = " ".join(dense_parts)
 
-            # Output
+            # Output with all behavioral signals for runtime weighting
             output_obj = {
                 "candidate_id": candidate.get("candidate_id"),
                 "dense_text": dense_text,
-                "redrob_signals": {
-                    "recruiter_response_rate": redrob_signals.get("recruiter_response_rate")
-                }
+                "redrob_signals": redrob_signals
             }
             
             outfile.write(json.dumps(output_obj) + '\n')
