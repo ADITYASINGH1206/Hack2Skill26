@@ -1,1 +1,15 @@
 /DATASET
+/hackathon_rules_conditions
+
+# ML Artifacts
+*.faiss
+*.pkl
+*.npy
+
+# Python Caches
+__pycache__/
+*.py[cod]
+
+# Planning files
+flaw_analysis.md
+implementation_plan.md
