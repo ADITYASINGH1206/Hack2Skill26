@@ -14,6 +14,7 @@ candidates.jsonl
 artifacts/*.faiss
 artifacts/*.pkl
 artifacts/*.npy
+*.zip
 
 # Also catch any artifacts accidentally left in project root
 *.faiss
