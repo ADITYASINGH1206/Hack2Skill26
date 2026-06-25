@@ -16,6 +16,7 @@ artifacts/*.faiss
 artifacts/*.pkl
 artifacts/*.npy
 *.zip
+bin_submission/
 
 # Also catch any artifacts accidentally left in project root
 *.faiss

@@ -415,6 +415,32 @@ def get_behavioral_multiplier(candidate: dict) -> float:
     elif interview_rate < 0.5:
         mult *= 0.8
 
+    # ==========================================
+    # POSITIVE BOOST LOGIC
+    # ==========================================
+    
+    # Boost 1: High demand (saved by recruiters)
+    saves = signals.get("saved_by_recruiters_30d", 0)
+    if saves > 10:
+        mult *= 1.15
+    elif saves > 0:
+        mult *= 1.05
+
+    # Boost 2: Active open-source/coding footprint
+    github_score = signals.get("github_activity_score", -1)
+    if github_score > 80:
+        mult *= 1.10
+    elif github_score > 40:
+        mult *= 1.05
+
+    # Boost 3: Highly complete and verified profile
+    completeness = signals.get("profile_completeness_score", 0)
+    if completeness > 90:
+        mult *= 1.05
+        
+    if signals.get("verified_email", False) and signals.get("verified_phone", False):
+        mult *= 1.02
+
     return mult
 
 
