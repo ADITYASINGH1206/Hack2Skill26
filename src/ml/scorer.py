@@ -313,7 +313,6 @@ def get_behavioral_multiplier(candidate: dict) -> float:
 # =============================================================================
 
 def rank_candidates(
-    output_dir: str = ".",
     top_k: int = 100,
 ) -> list[dict]:
     """
@@ -322,19 +321,15 @@ def rank_candidates(
 
     # ── 1. Load artifacts ────────────────────────────────────────────────
     print("Loading artifacts ...")
-    meta_path = os.path.join(output_dir, CANDIDATES_META_PATH)
-    with open(meta_path, "rb") as f:
+    with open(CANDIDATES_META_PATH, "rb") as f:
         candidates = pickle.load(f)
 
-    dense_path = os.path.join(output_dir, DENSE_INDEX_PATH)
-    index = faiss.read_index(dense_path)
+    index = faiss.read_index(DENSE_INDEX_PATH)
 
-    bm25_path = os.path.join(output_dir, BM25_INDEX_PATH)
-    with open(bm25_path, "rb") as f:
+    with open(BM25_INDEX_PATH, "rb") as f:
         bm25 = pickle.load(f)
 
-    jd_vec_path = os.path.join(output_dir, JD_VECTOR_PATH)
-    jd_vector = np.load(jd_vec_path)
+    jd_vector = np.load(JD_VECTOR_PATH)
 
     n = len(candidates)
     print(f"  Loaded {n} candidates, FAISS index, BM25 index")
@@ -402,6 +397,16 @@ def rank_candidates(
 
     # ── 5. Sort: score descending, tie-break on candidate_id ascending ───
     scored.sort(key=lambda x: (-x["final_score"], x["candidate_id"]))
+
+    # ── Normalize final scores to [0, 1] range using theoretical max ─────
+    # The maximum possible base score is 1.0
+    # The maximum multipliers are: Trajectory (1.3) * Location (1.3) = 1.69
+    THEORETICAL_MAX_SCORE = 1.69
+    
+    for c in scored:
+        # Divide by theoretical max to naturally bound between 0 and 1
+        # No candidate will be exactly 1.0 unless they are a perfect theoretical anomaly
+        c["final_score"] = min(c["final_score"] / THEORETICAL_MAX_SCORE, 1.0)
 
     # ── 6. Report ────────────────────────────────────────────────────────
     print(f"\n-- Results --")

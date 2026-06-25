@@ -3,6 +3,8 @@ config.py — Single source of truth for all Role 2 constants.
 Imported by both indexer.py and scorer.py to prevent drift.
 """
 
+import os
+
 # =============================================================================
 # JD QUERIES — Dual strategy: semantic (natural language) + BM25 (keywords)
 # =============================================================================
@@ -157,7 +159,8 @@ HONEYPOT_EXPERIENCE_RATIO = 1.5         # Flag if total career months > years_of
 # ARTIFACT FILE PATHS
 # =============================================================================
 
-DENSE_INDEX_PATH = "dense_index.faiss"
-BM25_INDEX_PATH = "bm25_index.pkl"
-CANDIDATES_META_PATH = "candidates_meta.pkl"
-JD_VECTOR_PATH = "jd_vector.npy"
+ARTIFACTS_DIR = "artifacts"
+DENSE_INDEX_PATH = os.path.join(ARTIFACTS_DIR, "dense_index.faiss")
+BM25_INDEX_PATH = os.path.join(ARTIFACTS_DIR, "bm25_index.pkl")
+CANDIDATES_META_PATH = os.path.join(ARTIFACTS_DIR, "candidates_meta.pkl")
+JD_VECTOR_PATH = os.path.join(ARTIFACTS_DIR, "jd_vector.npy")

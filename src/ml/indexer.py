@@ -188,4 +188,8 @@ def main(input_file: str = "clean_pool.jsonl", output_dir: str = "."):
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    if len(sys.argv) > 1:
+        main(input_file=sys.argv[1])
+    else:
+        main()
