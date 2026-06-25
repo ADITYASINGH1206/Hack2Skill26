@@ -274,13 +274,112 @@ def compute_final_score(
 
 
 # =============================================================================
-# Behavioral Multiplier Placeholder (Role 3 will replace this)
+# STEP 5F: Pure Researcher Penalty (Soft Filter)
+# =============================================================================
+
+def pure_researcher_penalty(candidate: dict) -> float:
+    """
+    Penalize candidates whose entire career is in academic/research roles
+    with no production engineering experience.
+    JD explicitly says: 'If you've spent your career in pure research
+    environments without any production deployment — we will not move forward.'
+    """
+    history = candidate.get("career_history", [])
+    if not history:
+        return 1.0  # No data — don't penalize
+
+    research_titles = {
+        "professor", "researcher", "research assistant", "research associate",
+        "research fellow", "postdoc", "postdoctoral", "phd", "doctoral",
+        "lab assistant", "teaching assistant", "academic",
+        "research scientist", "principal researcher",
+    }
+
+    research_count = 0
+    for role in history:
+        title = role.get("title", "").lower().strip()
+        if any(rt in title for rt in research_titles):
+            research_count += 1
+
+    # If ALL roles are research/academic -> heavy penalty
+    if research_count == len(history):
+        return 0.2
+    # If most roles are research -> moderate penalty
+    elif research_count > len(history) * 0.7:
+        return 0.5
+
+    return 1.0
+
+
+# =============================================================================
+# STEP 5G: Notice Period Penalty (Soft Filter)
+# =============================================================================
+
+def notice_period_penalty(candidate: dict) -> float:
+    """
+    Penalize candidates with high notice periods.
+    JD says: 'We'd love sub-30-day notice. 30+ day notice candidates
+    are still in scope but the bar gets higher.'
+    """
+    signals = candidate.get("redrob_signals", {})
+    notice_days = signals.get("notice_period_days", 0)
+
+    if notice_days <= 30:
+        return 1.0   # Ideal
+    elif notice_days <= 60:
+        return 0.85  # Acceptable
+    elif notice_days <= 90:
+        return 0.7   # High bar
+    else:
+        return 0.5   # Very long — significant penalty
+
+
+# =============================================================================
+# STEP 5H: Title Chaser Penalty (Soft Filter)
+# =============================================================================
+
+def title_chaser_penalty(candidate: dict) -> float:
+    """
+    Penalize candidates who switch companies too frequently.
+    JD says: 'If your career trajectory shows you optimizing for titles
+    by switching companies every 1.5 years, we're not a fit.'
+    """
+    history = candidate.get("career_history", [])
+    yoe = candidate.get("profile", {}).get("years_of_experience", 0)
+
+    if not history or yoe < 3 or len(history) < 2:
+        return 1.0  # Not enough data or too junior to judge
+
+    # Count unique companies
+    companies = set()
+    for role in history:
+        company = role.get("company", "").lower().strip()
+        if company:
+            companies.add(company)
+
+    if not companies:
+        return 1.0
+
+    avg_tenure_years = yoe / len(companies)
+
+    if avg_tenure_years < 1.0:
+        return 0.4   # Extreme job-hopper
+    elif avg_tenure_years < 1.5:
+        return 0.6   # Frequent switcher
+    elif avg_tenure_years < 2.0:
+        return 0.85  # Slight concern
+
+    return 1.0
+
+
+# =============================================================================
+# Behavioral Multiplier
 # =============================================================================
 
 def get_behavioral_multiplier(candidate: dict) -> float:
     """
-    Placeholder for Role 3's behavioral scoring logic.
-    Returns a basic heuristic so the pipeline can be tested end-to-end.
+    Compute a behavioral quality multiplier from the 23 Redrob signals.
+    Penalizes unresponsive and inactive candidates.
     """
     signals = candidate.get("redrob_signals", {})
     mult = 1.0
@@ -304,6 +403,17 @@ def get_behavioral_multiplier(candidate: dict) -> float:
                 mult *= 0.8
         except (ValueError, TypeError):
             pass
+
+    # Reward open-to-work candidates
+    if signals.get("open_to_work_flag", False):
+        mult *= 1.05
+
+    # Penalize low interview completion rate
+    interview_rate = signals.get("interview_completion_rate", 0.5)
+    if interview_rate < 0.3:
+        mult *= 0.6
+    elif interview_rate < 0.5:
+        mult *= 0.8
 
     return mult
 
@@ -351,8 +461,8 @@ def rank_candidates(
     if bm25_max > 0:
         bm25_scores = bm25_scores / bm25_max
 
-    # ── 4. Apply 5 scoring layers + combine ──────────────────────────────
-    print("Applying multi-layer scoring ...")
+    # ── 4. Apply 8 scoring layers + combine ──────────────────────────────
+    print("Applying multi-layer scoring (8 layers) ...")
     scored = []
     honeypot_count = 0
 
@@ -367,6 +477,11 @@ def rank_candidates(
         l_score = location_score(candidate)
         b_mult = get_behavioral_multiplier(candidate)
 
+        # New soft penalties from JD disqualifiers
+        research_pen = pure_researcher_penalty(candidate)
+        notice_pen = notice_period_penalty(candidate)
+        chaser_pen = title_chaser_penalty(candidate)
+
         f_score = compute_final_score(
             semantic_sim=semantic_scores[i],
             bm25_sim=bm25_scores[i],
@@ -377,6 +492,11 @@ def rank_candidates(
             location_sc=l_score,
             behavioral_mult=b_mult,
         )
+
+        # Apply soft penalties on top of the base score
+        f_score *= research_pen
+        f_score *= notice_pen
+        f_score *= chaser_pen
 
         scored.append({
             "candidate_id": candidate["candidate_id"],
@@ -389,9 +509,13 @@ def rank_candidates(
             "experience_score": e_score,
             "location_score": l_score,
             "behavioral_mult": b_mult,
+            "research_penalty": research_pen,
+            "notice_penalty": notice_pen,
+            "chaser_penalty": chaser_pen,
             # Keep reference for reasoning generation (Role 3)
             "profile": candidate.get("profile", {}),
             "skills": candidate.get("skills", []),
+            "career_history": candidate.get("career_history", []),
             "redrob_signals": candidate.get("redrob_signals", {}),
         })
 
