@@ -67,9 +67,12 @@ def is_honeypot(candidate: dict) -> bool:
     Returns True if any impossibility is detected.
     """
     # ── Check 1: Expert skills with 0 months duration ────────────────────
-    for skill in candidate.get("skills", []):
-        if skill.get("proficiency") == "expert" and skill.get("duration_months", 1) == 0:
-            return True
+    expert_zeros = [
+        s for s in candidate.get("skills", [])
+        if s.get("proficiency", "").lower() in ("expert", "advanced") and s.get("duration_months", 1) == 0
+    ]
+    if len(expert_zeros) >= 2:
+        return True
 
     # ── Check 2: Mass expert claims with suspiciously low durations ──────
     expert_skills = [
@@ -177,6 +180,35 @@ def is_non_technical_title(candidate: dict) -> bool:
 
 
 # =============================================================================
+# WRONG DOMAIN CHECK (Hard Drop)
+# =============================================================================
+
+def is_wrong_domain(candidate: dict) -> bool:
+    """
+    If a candidate has 3+ skills in Robotics/Computer Vision/Self-Driving,
+    but ZERO skills in NLP/Retrieval/Search, drop them.
+    This prevents irrelevant AI researchers from clogging the ranks.
+    """
+    skills = candidate.get("skills", [])
+    if not skills:
+        return False
+        
+    skill_names = {s.get("name", "").lower() for s in skills}
+    
+    cv_skills = {'computer vision', 'image classification', 'object detection',
+                 'image segmentation', 'speech recognition', 'tts', 'text-to-speech',
+                 'asr', 'robotics', 'slam', 'point cloud', 'pose estimation', 'lidar'}
+                 
+    nlp_skills = {'nlp', 'retrieval', 'ranking', 'recommendation', 'search',
+                  'embeddings', 'faiss', 'pinecone', 'llm', 'rag', 'language model'}
+                  
+    cv_hits = sum(1 for w in cv_skills if any(w in x for x in skill_names))
+    nlp_hits = sum(1 for w in nlp_skills if any(w in x for x in skill_names))
+    
+    return (cv_hits >= 3 and nlp_hits == 0)
+
+
+# =============================================================================
 # MAIN PIPELINE
 # =============================================================================
 
@@ -215,6 +247,11 @@ def clean_candidates(input_path: str, output_path: str):
             # Hard Drop 2: Non-technical title
             if is_non_technical_title(candidate):
                 title_dropped += 1
+                continue
+
+            # Hard Drop 3: Wrong Domain (e.g. CV/Robotics with no NLP)
+            if is_wrong_domain(candidate):
+                title_dropped += 1  # count it under same category for simplicity
                 continue
 
             # Candidate survives — write to clean pool

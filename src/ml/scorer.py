@@ -159,12 +159,17 @@ def career_trajectory_score(candidate: dict) -> float:
         return 0.5  # No career history - weak signal
 
     # Check if entire career is consulting
-    companies = [h.get("company", "").lower() for h in history]
-    if all(
-        any(firm in company for firm in CONSULTING_FIRMS)
-        for company in companies
-    ):
-        score *= 0.2  # Near elimination
+    consulting_months = 0
+    total_months = 0
+    for role in history:
+        dur = role.get("duration_months", 0)
+        total_months += dur
+        company = role.get("company", "").lower()
+        if any(firm in company for firm in CONSULTING_FIRMS):
+            consulting_months += dur
+            
+    if total_months > 0 and (consulting_months / total_months) > 0.95:
+        score *= 0.1  # Heavy penalty for pure consultants
 
     # Calculate product company experience
     product_months = 0
@@ -373,6 +378,56 @@ def title_chaser_penalty(candidate: dict) -> float:
 
 
 # =============================================================================
+# NEW JD-SPECIFIC SOFT FILTERS
+# =============================================================================
+
+def non_coding_architect_penalty(candidate: dict) -> float:
+    """
+    JD: If you are a senior engineer who hasn't written production code in the last
+    18 months because you've moved into 'architecture' or 'tech lead' roles...
+    """
+    history = candidate.get("career_history", [])
+    if not history:
+        return 1.0
+        
+    # Check the most recent role
+    current_role = sorted(history, key=lambda x: x.get("start_date", ""), reverse=True)[0]
+    title = current_role.get("title", "").lower()
+    dur = current_role.get("duration_months", 0)
+    
+    if ("architect" in title or "head of" in title or "vp" in title or "director" in title):
+        if dur > 18:
+            return 0.3  # Heavy penalty
+    return 1.0
+
+def langchain_wrapper_penalty(candidate: dict) -> float:
+    """
+    JD: If your 'AI experience' consists primarily of recent projects using 
+    LangChain to call OpenAI without pre-LLM-era ML production experience...
+    """
+    skills = [s.get("name", "").lower() for s in candidate.get("skills", [])]
+    
+    has_wrapper = any(w in sk for w in ["langchain", "openai", "llama_index"] for sk in skills)
+    has_fundamentals = any(f in sk for f in ["machine learning", "nlp", "information retrieval", "pytorch", "tensorflow"] for sk in skills)
+    
+    if has_wrapper and not has_fundamentals:
+        return 0.4
+    return 1.0
+
+def closed_source_penalty(candidate: dict) -> float:
+    """
+    JD: People whose work has been entirely on closed-source proprietary systems 
+    for 5+ years without external validation (papers, talks, open-source).
+    """
+    yoe = candidate.get("profile", {}).get("years_of_experience", 0)
+    github_score = candidate.get("redrob_signals", {}).get("github_activity_score", -1)
+    
+    if yoe > 5 and (github_score == -1 or github_score == 0):
+        return 0.8  # Slight penalty
+    return 1.0
+
+
+# =============================================================================
 # Behavioral Multiplier
 # =============================================================================
 
@@ -384,36 +439,47 @@ def get_behavioral_multiplier(candidate: dict) -> float:
     signals = candidate.get("redrob_signals", {})
     mult = 1.0
 
-    # Penalize very low recruiter response rate
+    # Penalize Ghosters (inactive > 180 days AND low response rate)
     response_rate = signals.get("recruiter_response_rate", 0.5)
-    if response_rate < 0.1:
-        mult *= 0.4
-    elif response_rate < 0.2:
-        mult *= 0.6
-
-    # Penalize inactive candidates (last_active_date > 6 months ago)
     last_active = signals.get("last_active_date")
+    days_inactive = 0
     if last_active:
         try:
             active_date = datetime.strptime(last_active, "%Y-%m-%d")
             days_inactive = (datetime.now() - active_date).days
-            if days_inactive > 180:
-                mult *= 0.5
-            elif days_inactive > 90:
-                mult *= 0.8
         except (ValueError, TypeError):
             pass
+
+    if days_inactive > 180 and response_rate < 0.10:
+        return 0.0  # Instant drop for Ghosters
+
+    # Normal activity penalties
+    if days_inactive > 180:
+        mult *= 0.5
+    elif days_inactive > 90:
+        mult *= 0.8
+
+    # Normal response rate penalties
+    if response_rate < 0.2:
+        mult *= 0.6
+        
+    # Profile Completeness
+    completeness = signals.get("profile_completeness_score", 50)
+    if completeness < 50:
+        mult *= 0.7
+    elif completeness > 90:
+        mult *= 1.05
 
     # Reward open-to-work candidates
     if signals.get("open_to_work_flag", False):
         mult *= 1.05
 
-    # Penalize low interview completion rate
+    # Interview completion rate
     interview_rate = signals.get("interview_completion_rate", 0.5)
-    if interview_rate < 0.3:
+    if interview_rate < 0.4:
         mult *= 0.6
-    elif interview_rate < 0.5:
-        mult *= 0.8
+    elif interview_rate > 0.85:
+        mult *= 1.12
 
     # ==========================================
     # POSITIVE BOOST LOGIC
@@ -434,10 +500,6 @@ def get_behavioral_multiplier(candidate: dict) -> float:
         mult *= 1.05
 
     # Boost 3: Highly complete and verified profile
-    completeness = signals.get("profile_completeness_score", 0)
-    if completeness > 90:
-        mult *= 1.05
-        
     if signals.get("verified_email", False) and signals.get("verified_phone", False):
         mult *= 1.02
 
@@ -507,6 +569,10 @@ def rank_candidates(
         research_pen = pure_researcher_penalty(candidate)
         notice_pen = notice_period_penalty(candidate)
         chaser_pen = title_chaser_penalty(candidate)
+        
+        arch_pen = non_coding_architect_penalty(candidate)
+        wrapper_pen = langchain_wrapper_penalty(candidate)
+        closed_pen = closed_source_penalty(candidate)
 
         f_score = compute_final_score(
             semantic_sim=semantic_scores[i],
@@ -523,6 +589,9 @@ def rank_candidates(
         f_score *= research_pen
         f_score *= notice_pen
         f_score *= chaser_pen
+        f_score *= arch_pen
+        f_score *= wrapper_pen
+        f_score *= closed_pen
 
         scored.append({
             "candidate_id": candidate["candidate_id"],
