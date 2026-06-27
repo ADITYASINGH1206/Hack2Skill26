@@ -12,10 +12,7 @@ clean_pool.jsonl
 #   python -m src.ml.indexer candidates.jsonl
 # Or by running notebooks/role2_pipeline.ipynb on Google Colab
 # =============================================================================
-artifacts/*.faiss
-artifacts/*.pkl
-artifacts/*.npy
-artifacts/*.bin
+
 *.zip
 bin_submission/
 
