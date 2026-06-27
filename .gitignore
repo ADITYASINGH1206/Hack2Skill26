@@ -51,3 +51,6 @@ Thumbs.db
 # =============================================================================
 flaw_analysis.md
 implementation_plan.md
+hackathon_rules_conditions.md
+/tests
+/notebooks
