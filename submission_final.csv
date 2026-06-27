@@ -16,86 +16,86 @@ CAND_0009024,14,0.6489,Search Engineer with 5.2 years based in Chennai; Tamil Na
 CAND_0006567,15,0.6441,Senior AI Engineer with 7.9 years based in Noida; Uttar Pradesh; directly relevant skills include scikit-learn | NLP | Python | Search Backend; recent experience: Senior AI Engineer at Meta (26mo); based in preferred JD location; experience within JD's 5-9 year sweet spot.
 CAND_0091745,16,0.6432,Junior ML Engineer with 5.9 years based in Pune; Maharashtra; directly relevant skills include Deep Learning | Embeddings | Machine Learning | PyTorch; recent experience: Junior ML Engineer at Locobuzz (44mo); based in preferred JD location; experience within JD's 5-9 year sweet spot.
 CAND_0006418,17,0.6414,Machine Learning Engineer with 5.7 years based in Gurgaon; Haryana; directly relevant skills include Embeddings | TensorFlow | Weaviate | Elasticsearch; recent experience: Machine Learning Engineer at Verloop.io (40mo); based in preferred JD location; experience within JD's 5-9 year sweet spot.
-CAND_0042506,18,0.6331,Search Engineer with 4.2 years based in Mumbai; Maharashtra; directly relevant skills include PEFT | scikit-learn | TensorFlow | Milvus; recent experience: Search Engineer at Verloop.io (18mo); India-based (Mumbai; Maharashtra); short notice period (15d); however; under the JD's 5-year minimum (4.2 yrs).
-CAND_0051004,19,0.6274,Senior Data Scientist with 4.7 years based in Delhi; Delhi; directly relevant skills include Embeddings | PyTorch | Qdrant | PEFT; recent experience: Senior Data Scientist at CRED (24mo); based in preferred JD location; short notice period (15d); however; under the JD's 5-year minimum (4.7 yrs).
-CAND_0032216,20,0.6214,ML Engineer with 6.1 years based in Chennai; Tamil Nadu; directly relevant skills include PyTorch | Qdrant | QLoRA | Information Retrieval; recent experience: ML Engineer at upGrad (13mo); India-based (Chennai; Tamil Nadu); experience within JD's 5-9 year sweet spot.
-CAND_0064326,21,0.6186,Search Engineer with 7.6 years based in Gurgaon; Haryana; relevant skills: scikit-learn | PyTorch | Milvus; recent experience: Search Engineer at Sarvam AI (31mo); based in preferred JD location; experience within JD's 5-9 year sweet spot.
-CAND_0072688,22,0.6181,Data Scientist with 6.9 years based in Pune; Maharashtra; relevant skills: Milvus | Deep Learning | LoRA; recent experience: Data Scientist at Niramai (30mo); based in preferred JD location; experience within JD's 5-9 year sweet spot.
-CAND_0030348,23,0.6085,Machine Learning Engineer with 4.5 years based in Noida; Uttar Pradesh; relevant skills: Deep Learning | PyTorch | Embeddings; recent experience: Machine Learning Engineer at BYJU'S (28mo); based in preferred JD location; actively open to new opportunities; however; under the JD's 5-year minimum (4.5 yrs).
-CAND_0068351,24,0.5980,Lead AI Engineer with 6.4 years based in Delhi; Delhi; relevant skills: Deep Learning | Qdrant | Elasticsearch; recent experience: Lead AI Engineer at Sarvam AI (25mo); based in preferred JD location; experience within JD's 5-9 year sweet spot.
-CAND_0014440,25,0.5961,Recommendation Systems Engineer with 6.4 years based in Chennai; Tamil Nadu; relevant skills: Elasticsearch | Milvus | Machine Learning; recent experience: Recommendation Systems Engineer at CRED (31mo); India-based (Chennai; Tamil Nadu); experience within JD's 5-9 year sweet spot.
-CAND_0007009,26,0.5945,Recommendation Systems Engineer with 7.9 years based in Noida; Uttar Pradesh; relevant skills: Weaviate | Python | Embeddings; recent experience: Recommendation Systems Engineer at Wysa (14mo); based in preferred JD location; experience within JD's 5-9 year sweet spot.
-CAND_0050454,27,0.5945,AI Engineer with 6.8 years based in Delhi; Delhi; relevant skills: PyTorch | QLoRA | FAISS; recent experience: AI Engineer at Rephrase.ai (30mo); based in preferred JD location; experience within JD's 5-9 year sweet spot.
-CAND_0017960,28,0.5928,Recommendation Systems Engineer with 7.7 years based in Bangalore; Karnataka; relevant skills: QLoRA | Machine Learning | Qdrant; recent experience: Recommendation Systems Engineer at Nykaa (54mo); India-based (Bangalore; Karnataka); experience within JD's 5-9 year sweet spot.
-CAND_0044855,29,0.5913,Senior Data Scientist with 6.6 years based in Coimbatore; Tamil Nadu; relevant skills: Pinecone | Machine Learning | NLP; recent experience: Senior Data Scientist at Flipkart (31mo); experience within JD's 5-9 year sweet spot.
-CAND_0054394,30,0.5855,Recommendation Systems Engineer with 4.1 years based in Pune; Maharashtra; relevant skills: Embeddings | Pinecone | scikit-learn; recent experience: Recommendation Systems Engineer at PharmEasy (14mo); based in preferred JD location; strong recruiter engagement (64% response rate); however; under the JD's 5-year minimum (4.1 yrs).
-CAND_0079284,31,0.5845,Machine Learning Engineer with 4.9 years based in Hyderabad; Telangana; relevant skills: scikit-learn | QLoRA | Qdrant; India-based (Hyderabad; Telangana); however; under the JD's 5-year minimum (4.9 yrs).
-CAND_0093193,32,0.5836,Senior Machine Learning Engineer with 7.9 years based in Bangalore; Karnataka; relevant skills: Qdrant | TensorFlow | Machine Learning; India-based (Bangalore; Karnataka).
-CAND_0030946,33,0.5797,Junior ML Engineer with 6.7 years based in Mumbai; Maharashtra; relevant skills: Machine Learning | Elasticsearch | Embeddings; India-based (Mumbai; Maharashtra).
-CAND_0012888,34,0.5762,Junior ML Engineer with 6.4 years based in Delhi; Delhi; relevant skills: Machine Learning | scikit-learn | Semantic Search; based in preferred JD location.
-CAND_0005649,35,0.5755,Senior Data Scientist with 7.4 years based in Delhi; Delhi; relevant skills: Deep Learning | TensorFlow | QLoRA; based in preferred JD location; however; long notice period (90 days).
-CAND_0083879,36,0.5673,Machine Learning Engineer with 7.1 years based in Noida; Uttar Pradesh; relevant skills: Milvus | scikit-learn | Machine Learning; based in preferred JD location.
-CAND_0062247,37,0.5668,AI Engineer with 7.3 years based in Kochi; Kerala; relevant skills: Pinecone | Qdrant | RAG; experience within JD's 5-9 year sweet spot.
-CAND_0087630,38,0.5662,AI Engineer with 7.2 years based in Gurgaon; Haryana; relevant skills: Elasticsearch | NLP | Deep Learning; based in preferred JD location.
-CAND_0087364,39,0.5569,Recommendation Systems Engineer with 4.9 years based in Gurgaon; Haryana; relevant skills: Deep Learning | Qdrant | Milvus; based in preferred JD location; however; under the JD's 5-year minimum (4.9 yrs).
-CAND_0074098,40,0.5514,Data Scientist with 4.9 years based in Pune; Maharashtra; relevant skills: TensorFlow | LoRA | Fine-tuning LLMs; based in preferred JD location; however; under the JD's 5-year minimum (4.9 yrs).
-CAND_0017178,41,0.5470,ML Engineer with 4.2 years based in Hyderabad; Telangana; relevant skills: PEFT | QLoRA | Machine Learning; India-based (Hyderabad; Telangana); however; under the JD's 5-year minimum (4.2 yrs).
-CAND_0078492,42,0.5441,Recommendation Systems Engineer with 5.1 years based in Kochi; Kerala; relevant skills: Machine Learning | FAISS | Qdrant; experience within JD's 5-9 year sweet spot.
-CAND_0017722,43,0.5434,Data Scientist with 5.7 years based in Noida; Uttar Pradesh; relevant skills: scikit-learn | PyTorch | Qdrant; based in preferred JD location.
-CAND_0009837,44,0.5429,Senior Data Scientist with 4.3 years based in Noida; Uttar Pradesh; relevant skills: scikit-learn | TensorFlow | PyTorch; based in preferred JD location; however; under the JD's 5-year minimum (4.3 yrs).
-CAND_0026942,45,0.5410,Junior ML Engineer with 6.0 years based in Chandigarh; Chandigarh; relevant skills: TensorFlow | scikit-learn | Information Retrieval; experience within JD's 5-9 year sweet spot.
-CAND_0043860,46,0.5399,Junior ML Engineer with 6.1 years based in Bhubaneswar; Odisha; relevant skills: Deep Learning | Qdrant | PyTorch; experience within JD's 5-9 year sweet spot.
-CAND_0007596,47,0.5396,Junior ML Engineer with 4.4 years based in Delhi; Delhi; relevant skills: scikit-learn | Machine Learning | Python; based in preferred JD location; however; under the JD's 5-year minimum (4.4 yrs).
-CAND_0048558,48,0.5362,Data Scientist with 6.7 years based in Noida; Uttar Pradesh; relevant skills: Qdrant | Elasticsearch | Information Retrieval; based in preferred JD location.
-CAND_0066690,49,0.5358,ML Engineer with 4.8 years based in Gurgaon; Haryana; relevant skills: PEFT | Elasticsearch | TensorFlow; based in preferred JD location; however; under the JD's 5-year minimum (4.8 yrs).
-CAND_0026362,50,0.5317,Data Scientist with 5.0 years based in Gurgaon; Haryana; relevant skills: Weaviate | Pinecone; based in preferred JD location.
-CAND_0018701,51,0.5316,Junior ML Engineer (6.0 yrs) in Delhi; Delhi India; some relevant skills (Elasticsearch | QLoRA); based in preferred JD location.
-CAND_0071432,52,0.5269,Data Scientist (4.1 yrs) in Hyderabad; Telangana India; some relevant skills (Weaviate | Pinecone); India-based (Hyderabad; Telangana); concerns: under the JD's 5-year minimum (4.1 yrs).
-CAND_0045475,53,0.5246,ML Engineer (4.9 yrs) in Delhi; Delhi India; some relevant skills (PyTorch | Pinecone); based in preferred JD location; concerns: under the JD's 5-year minimum (4.9 yrs).
-CAND_0073504,54,0.5213,Junior ML Engineer (6.6 yrs) in Gurgaon; Haryana India; some relevant skills (Elasticsearch | RAG); based in preferred JD location.
-CAND_0018094,55,0.5121,ML Engineer (5.2 yrs) in Bangalore; Karnataka India; some relevant skills (QLoRA | Pinecone); India-based (Bangalore; Karnataka).
-CAND_0037160,56,0.5099,Data Scientist (6.0 yrs) in Mumbai; Maharashtra India; some relevant skills (Deep Learning | Weaviate); India-based (Mumbai; Maharashtra).
-CAND_0091580,57,0.5049,Data Scientist (5.5 yrs) in Noida; Uttar Pradesh India; some relevant skills (FAISS | QLoRA); based in preferred JD location; concerns: below-average recruiter response rate (25%).
-CAND_0065991,58,0.5037,Data Scientist (5.4 yrs) in Bangalore; Karnataka India; some relevant skills (QLoRA | PyTorch); India-based (Bangalore; Karnataka).
-CAND_0080051,59,0.5030,Data Scientist (5.2 yrs) in Gurgaon; Haryana India; some relevant skills (NLP | PEFT); based in preferred JD location.
-CAND_0075574,60,0.5021,Machine Learning Engineer (5.7 yrs) in Bangalore; Karnataka India; some relevant skills (Weaviate | scikit-learn); India-based (Bangalore; Karnataka).
-CAND_0018454,61,0.5015,Data Scientist (4.6 yrs) in Chennai; Tamil Nadu India; some relevant skills (Milvus | Deep Learning); concerns: under the JD's 5-year minimum (4.6 yrs).
-CAND_0099806,62,0.4980,AI Engineer (4.6 yrs) in Bhubaneswar; Odisha India; some relevant skills (LoRA | RAG); concerns: under the JD's 5-year minimum (4.6 yrs).
-CAND_0041610,63,0.4974,Recommendation Systems Engineer (6.7 yrs) in Indore; Madhya Pradesh India; some relevant skills (LoRA | Elasticsearch).
-CAND_0011263,64,0.4849,ML Engineer (5.1 yrs) in Pune; Maharashtra India; some relevant skills (Machine Learning | Pinecone).
-CAND_0052431,65,0.4822,ML Engineer (5.3 yrs) in Ahmedabad; Gujarat India; some relevant skills (Milvus | Semantic Search).
-CAND_0089947,66,0.4787,Junior ML Engineer (5.4 yrs) in Noida; Uttar Pradesh India; some relevant skills (Elasticsearch | PEFT); concerns: long notice period (90 days).
-CAND_0005260,67,0.4770,Senior NLP Engineer (5.2 yrs) in Chennai; Tamil Nadu India; some relevant skills (Deep Learning | Python).
-CAND_0058426,68,0.4759,Data Scientist (6.5 yrs) in Bangalore; Karnataka India; some relevant skills (Weaviate | QLoRA).
-CAND_0002025,69,0.4726,Senior AI Engineer (5.9 yrs) in Trivandrum; Kerala India; some relevant skills (FAISS | TensorFlow).
-CAND_0090155,70,0.4716,ML Engineer (5.8 yrs) in Pune; Maharashtra India; some relevant skills (Milvus | Qdrant); concerns: long notice period (90 days).
-CAND_0090093,71,0.4709,Data Scientist (4.4 yrs) in Noida; Uttar Pradesh India; some relevant skills (LoRA | QLoRA); concerns: under the JD's 5-year minimum (4.4 yrs).
-CAND_0073982,72,0.4680,Data Scientist (7.0 yrs) in Delhi; Delhi India; some relevant skills (PEFT | Qdrant).
-CAND_0057563,73,0.4665,NLP Engineer (6.8 yrs) in Indore; Madhya Pradesh India; some relevant skills (Deep Learning | RAG).
-CAND_0059422,74,0.4654,Senior Data Engineer (7.7 yrs) in Gurgaon; Haryana India; some relevant skills (Weaviate); concerns: below-average recruiter response rate (26%).
-CAND_0011687,75,0.4629,Senior NLP Engineer (7.8 yrs) in Indore; Madhya Pradesh India; some relevant skills (TensorFlow | FAISS).
-CAND_0046064,76,0.4612,Senior NLP Engineer (8.9 yrs) in Coimbatore; Tamil Nadu India; some relevant skills (Python | Pinecone).
-CAND_0047327,77,0.4580,Junior ML Engineer (5.0 yrs) in Gurgaon; Haryana India; some relevant skills (QLoRA | Qdrant).
-CAND_0098217,78,0.4577,ML Engineer (6.4 yrs) in Noida; Uttar Pradesh India; some relevant skills (PEFT | FAISS).
-CAND_0098846,79,0.4535,AI Engineer (7.6 yrs) in Indore; Madhya Pradesh India; some relevant skills (PEFT | QLoRA).
-CAND_0008049,80,0.4533,ML Engineer (6.3 yrs) in Pune; Maharashtra India; some relevant skills (RAG).
-CAND_0015578,81,0.4528,AI Engineer (5.4 yrs) in Delhi; Delhi India; some relevant skills (Embeddings | NLP); concerns: long notice period (90 days).
-CAND_0000031,82,0.4469,Recommendation Systems Engineer (6.0 yrs) in Hyderabad; Telangana India; some relevant skills (FAISS | Pinecone).
-CAND_0010603,83,0.4469,ML Engineer (5.3 yrs) in Bangalore; Karnataka India; some relevant skills (Deep Learning | Machine Learning); concerns: long notice period (90 days).
-CAND_0040178,84,0.4458,ML Engineer (5.0 yrs) in Pune; Maharashtra India; some relevant skills (Weaviate | Python).
-CAND_0067403,85,0.4454,Junior ML Engineer (4.6 yrs) in Delhi; Delhi India; some relevant skills (Qdrant | RAG); concerns: under the JD's 5-year minimum (4.6 yrs); below-average recruiter response rate (26%).
-CAND_0043637,86,0.4440,Junior ML Engineer (5.5 yrs) in Delhi; Delhi India; some relevant skills (PyTorch | Milvus).
-CAND_0004972,87,0.4415,ML Engineer (6.0 yrs) in Gurgaon; Haryana India; some relevant skills (RAG | PyTorch); concerns: long notice period (90 days).
-CAND_0038368,88,0.4404,ML Engineer (5.4 yrs) in Hyderabad; Telangana India; some relevant skills (Embeddings | FAISS).
-CAND_0036437,89,0.4389,Search Engineer (4.8 yrs) in Kolkata; West Bengal India; some relevant skills (Elasticsearch | Milvus); concerns: under the JD's 5-year minimum (4.8 yrs).
-CAND_0092181,90,0.4327,Data Scientist (4.6 yrs) in Mumbai; Maharashtra India; some relevant skills (PyTorch | NLP); concerns: under the JD's 5-year minimum (4.6 yrs).
-CAND_0087228,91,0.4316,Software Engineer (6.5 yrs) in Mumbai; Maharashtra India; some relevant skills (Qdrant | Machine Learning).
-CAND_0095213,92,0.4310,ML Engineer (5.1 yrs) in Gurgaon; Haryana India; some relevant skills (scikit-learn | Python).
-CAND_0082489,93,0.4283,ML Engineer (5.3 yrs) in Noida; Uttar Pradesh India; some relevant skills (Weaviate | PEFT); concerns: long notice period (90 days).
-CAND_0064888,94,0.4275,ML Engineer (5.8 yrs) in Vizag; Andhra Pradesh India; some relevant skills (Embeddings | TensorFlow).
-CAND_0025335,95,0.4214,Data Scientist (6.6 yrs) in Delhi; Delhi India; some relevant skills (NLP | TensorFlow).
-CAND_0056262,96,0.4213,Junior ML Engineer (6.0 yrs) in Bangalore; Karnataka India; some relevant skills (QLoRA | scikit-learn); concerns: below-average recruiter response rate (29%); long notice period (90 days).
-CAND_0040955,97,0.4207,Junior ML Engineer (6.6 yrs) in Pune; Maharashtra India; some relevant skills (PEFT | Embeddings).
-CAND_0030784,98,0.4195,Data Scientist (4.4 yrs) in Delhi; Delhi India; some relevant skills (Embeddings | RAG); concerns: under the JD's 5-year minimum (4.4 yrs); long notice period (90 days).
-CAND_0000273,99,0.4171,ML Engineer (5.8 yrs) in Kolkata; West Bengal India; some relevant skills (Qdrant | Fine-tuning LLMs).
-CAND_0015057,100,0.4166,ML Engineer (4.6 yrs) in Pune; Maharashtra India; some relevant skills (Embeddings | PEFT); concerns: under the JD's 5-year minimum (4.6 yrs); long notice period (90 days).
+CAND_0032216,18,0.6214,ML Engineer with 6.1 years based in Chennai; Tamil Nadu; directly relevant skills include PyTorch | Qdrant | QLoRA | Information Retrieval; recent experience: ML Engineer at upGrad (13mo); India-based (Chennai; Tamil Nadu); experience within JD's 5-9 year sweet spot.
+CAND_0064326,19,0.6186,Search Engineer with 7.6 years based in Gurgaon; Haryana; directly relevant skills include scikit-learn | PyTorch | Milvus | Deep Learning; recent experience: Search Engineer at Sarvam AI (31mo); based in preferred JD location; experience within JD's 5-9 year sweet spot.
+CAND_0072688,20,0.6181,Data Scientist with 6.9 years based in Pune; Maharashtra; directly relevant skills include Milvus | Deep Learning | LoRA | NLP; recent experience: Data Scientist at Niramai (30mo); based in preferred JD location; experience within JD's 5-9 year sweet spot.
+CAND_0068351,21,0.5980,Lead AI Engineer with 6.4 years based in Delhi; Delhi; relevant skills: Deep Learning | Qdrant | Elasticsearch; recent experience: Lead AI Engineer at Sarvam AI (25mo); based in preferred JD location; experience within JD's 5-9 year sweet spot.
+CAND_0014440,22,0.5961,Recommendation Systems Engineer with 6.4 years based in Chennai; Tamil Nadu; relevant skills: Elasticsearch | Milvus | Machine Learning; recent experience: Recommendation Systems Engineer at CRED (31mo); India-based (Chennai; Tamil Nadu); experience within JD's 5-9 year sweet spot.
+CAND_0007009,23,0.5945,Recommendation Systems Engineer with 7.9 years based in Noida; Uttar Pradesh; relevant skills: Weaviate | Python | Embeddings; recent experience: Recommendation Systems Engineer at Wysa (14mo); based in preferred JD location; experience within JD's 5-9 year sweet spot.
+CAND_0050454,24,0.5945,AI Engineer with 6.8 years based in Delhi; Delhi; relevant skills: PyTorch | QLoRA | FAISS; recent experience: AI Engineer at Rephrase.ai (30mo); based in preferred JD location; experience within JD's 5-9 year sweet spot.
+CAND_0017960,25,0.5928,Recommendation Systems Engineer with 7.7 years based in Bangalore; Karnataka; relevant skills: QLoRA | Machine Learning | Qdrant; recent experience: Recommendation Systems Engineer at Nykaa (54mo); India-based (Bangalore; Karnataka); experience within JD's 5-9 year sweet spot.
+CAND_0044855,26,0.5913,Senior Data Scientist with 6.6 years based in Coimbatore; Tamil Nadu; relevant skills: Pinecone | Machine Learning | NLP; recent experience: Senior Data Scientist at Flipkart (31mo); experience within JD's 5-9 year sweet spot.
+CAND_0093193,27,0.5836,Senior Machine Learning Engineer with 7.9 years based in Bangalore; Karnataka; relevant skills: Qdrant | TensorFlow | Machine Learning; recent experience: Senior Machine Learning Engineer at Niramai (44mo); India-based (Bangalore; Karnataka); experience within JD's 5-9 year sweet spot.
+CAND_0030946,28,0.5797,Junior ML Engineer with 6.7 years based in Mumbai; Maharashtra; relevant skills: Machine Learning | Elasticsearch | Embeddings; recent experience: Junior ML Engineer at Yellow.ai (24mo); India-based (Mumbai; Maharashtra); experience within JD's 5-9 year sweet spot.
+CAND_0012888,29,0.5762,Junior ML Engineer with 6.4 years based in Delhi; Delhi; relevant skills: Machine Learning | scikit-learn | Semantic Search; recent experience: Junior ML Engineer at Genpact AI (42mo); based in preferred JD location; experience within JD's 5-9 year sweet spot.
+CAND_0005649,30,0.5755,Senior Data Scientist with 7.4 years based in Delhi; Delhi; relevant skills: Deep Learning | TensorFlow | QLoRA; recent experience: Senior Data Scientist at Sarvam AI (18mo); based in preferred JD location; experience within JD's 5-9 year sweet spot; however; long notice period (90 days).
+CAND_0083879,31,0.5673,Machine Learning Engineer with 7.1 years based in Noida; Uttar Pradesh; relevant skills: Milvus | scikit-learn | Machine Learning; based in preferred JD location.
+CAND_0062247,32,0.5668,AI Engineer with 7.3 years based in Kochi; Kerala; relevant skills: Pinecone | Qdrant | RAG; experience within JD's 5-9 year sweet spot.
+CAND_0087630,33,0.5662,AI Engineer with 7.2 years based in Gurgaon; Haryana; relevant skills: Elasticsearch | NLP | Deep Learning; based in preferred JD location.
+CAND_0078492,34,0.5441,Recommendation Systems Engineer with 5.1 years based in Kochi; Kerala; relevant skills: Machine Learning | FAISS | Qdrant; experience within JD's 5-9 year sweet spot.
+CAND_0017722,35,0.5434,Data Scientist with 5.7 years based in Noida; Uttar Pradesh; relevant skills: scikit-learn | PyTorch | Qdrant; based in preferred JD location.
+CAND_0026942,36,0.5410,Junior ML Engineer with 6.0 years based in Chandigarh; Chandigarh; relevant skills: TensorFlow | scikit-learn | Information Retrieval; experience within JD's 5-9 year sweet spot.
+CAND_0043860,37,0.5399,Junior ML Engineer with 6.1 years based in Bhubaneswar; Odisha; relevant skills: Deep Learning | Qdrant | PyTorch; experience within JD's 5-9 year sweet spot.
+CAND_0048558,38,0.5362,Data Scientist with 6.7 years based in Noida; Uttar Pradesh; relevant skills: Qdrant | Elasticsearch | Information Retrieval; based in preferred JD location.
+CAND_0026362,39,0.5317,Data Scientist with 5.0 years based in Gurgaon; Haryana; relevant skills: Weaviate | Pinecone; based in preferred JD location.
+CAND_0018701,40,0.5316,Junior ML Engineer with 6.0 years based in Delhi; Delhi; relevant skills: Elasticsearch | QLoRA | Information Retrieval; based in preferred JD location.
+CAND_0042506,41,0.5214,Search Engineer with 4.2 years based in Mumbai; Maharashtra; relevant skills: PEFT | scikit-learn | TensorFlow; India-based (Mumbai; Maharashtra); however; under the JD's 5-year minimum (4.2 yrs).
+CAND_0073504,42,0.5213,Junior ML Engineer with 6.6 years based in Gurgaon; Haryana; relevant skills: Elasticsearch | RAG | TensorFlow; based in preferred JD location.
+CAND_0051004,43,0.5167,Senior Data Scientist with 4.7 years based in Delhi; Delhi; relevant skills: Embeddings | PyTorch | Qdrant; based in preferred JD location; however; under the JD's 5-year minimum (4.7 yrs).
+CAND_0018094,44,0.5121,ML Engineer with 5.2 years based in Bangalore; Karnataka; relevant skills: QLoRA | Pinecone | Semantic Search; India-based (Bangalore; Karnataka).
+CAND_0037160,45,0.5099,Data Scientist with 6.0 years based in Mumbai; Maharashtra; relevant skills: Deep Learning | Weaviate | Embeddings; India-based (Mumbai; Maharashtra).
+CAND_0091580,46,0.5049,Data Scientist with 5.5 years based in Noida; Uttar Pradesh; relevant skills: FAISS | QLoRA | Qdrant; based in preferred JD location; however; below-average recruiter response rate (25%).
+CAND_0065991,47,0.5037,Data Scientist with 5.4 years based in Bangalore; Karnataka; relevant skills: QLoRA | PyTorch | Vector Search; India-based (Bangalore; Karnataka).
+CAND_0080051,48,0.5030,Data Scientist with 5.2 years based in Gurgaon; Haryana; relevant skills: NLP | PEFT | PyTorch; based in preferred JD location.
+CAND_0075574,49,0.5021,Machine Learning Engineer with 5.7 years based in Bangalore; Karnataka; relevant skills: Weaviate | scikit-learn | Qdrant; India-based (Bangalore; Karnataka).
+CAND_0030348,50,0.5011,Machine Learning Engineer with 4.5 years based in Noida; Uttar Pradesh; relevant skills: Deep Learning | PyTorch | Embeddings; based in preferred JD location; however; under the JD's 5-year minimum (4.5 yrs).
+CAND_0041610,51,0.4974,Recommendation Systems Engineer (6.7 yrs) in Indore; Madhya Pradesh India; some relevant skills (LoRA | Elasticsearch); experience within JD's 5-9 year sweet spot.
+CAND_0011263,52,0.4849,ML Engineer (5.1 yrs) in Pune; Maharashtra India; some relevant skills (Machine Learning | Pinecone); based in preferred JD location.
+CAND_0052431,53,0.4822,ML Engineer (5.3 yrs) in Ahmedabad; Gujarat India; some relevant skills (Milvus | Semantic Search); experience within JD's 5-9 year sweet spot.
+CAND_0054394,54,0.4822,Recommendation Systems Engineer (4.1 yrs) in Pune; Maharashtra India; some relevant skills (Embeddings | Pinecone); based in preferred JD location; concerns: under the JD's 5-year minimum (4.1 yrs).
+CAND_0079284,55,0.4814,Machine Learning Engineer (4.9 yrs) in Hyderabad; Telangana India; some relevant skills (scikit-learn | QLoRA); India-based (Hyderabad; Telangana); concerns: under the JD's 5-year minimum (4.9 yrs).
+CAND_0089947,56,0.4787,Junior ML Engineer (5.4 yrs) in Noida; Uttar Pradesh India; some relevant skills (Elasticsearch | PEFT); based in preferred JD location; concerns: long notice period (90 days).
+CAND_0005260,57,0.4770,Senior NLP Engineer (5.2 yrs) in Chennai; Tamil Nadu India; some relevant skills (Deep Learning | Python); India-based (Chennai; Tamil Nadu).
+CAND_0058426,58,0.4759,Data Scientist (6.5 yrs) in Bangalore; Karnataka India; some relevant skills (Weaviate | QLoRA); India-based (Bangalore; Karnataka).
+CAND_0002025,59,0.4726,Senior AI Engineer (5.9 yrs) in Trivandrum; Kerala India; some relevant skills (FAISS | TensorFlow); experience within JD's 5-9 year sweet spot.
+CAND_0090155,60,0.4716,ML Engineer (5.8 yrs) in Pune; Maharashtra India; some relevant skills (Milvus | Qdrant); based in preferred JD location; concerns: long notice period (90 days).
+CAND_0073982,61,0.4680,Data Scientist (7.0 yrs) in Delhi; Delhi India; some relevant skills (PEFT | Qdrant).
+CAND_0057563,62,0.4665,NLP Engineer (6.8 yrs) in Indore; Madhya Pradesh India; some relevant skills (Deep Learning | RAG).
+CAND_0059422,63,0.4654,Senior Data Engineer (7.7 yrs) in Gurgaon; Haryana India; some relevant skills (Weaviate); concerns: below-average recruiter response rate (26%).
+CAND_0011687,64,0.4629,Senior NLP Engineer (7.8 yrs) in Indore; Madhya Pradesh India; some relevant skills (TensorFlow | FAISS).
+CAND_0046064,65,0.4612,Senior NLP Engineer (8.9 yrs) in Coimbatore; Tamil Nadu India; some relevant skills (Python | Pinecone).
+CAND_0087364,66,0.4586,Recommendation Systems Engineer (4.9 yrs) in Gurgaon; Haryana India; some relevant skills (Deep Learning | Qdrant); concerns: under the JD's 5-year minimum (4.9 yrs).
+CAND_0047327,67,0.4580,Junior ML Engineer (5.0 yrs) in Gurgaon; Haryana India; some relevant skills (QLoRA | Qdrant).
+CAND_0098217,68,0.4577,ML Engineer (6.4 yrs) in Noida; Uttar Pradesh India; some relevant skills (PEFT | FAISS).
+CAND_0074098,69,0.4541,Data Scientist (4.9 yrs) in Pune; Maharashtra India; some relevant skills (TensorFlow | LoRA); concerns: under the JD's 5-year minimum (4.9 yrs).
+CAND_0098846,70,0.4535,AI Engineer (7.6 yrs) in Indore; Madhya Pradesh India; some relevant skills (PEFT | QLoRA).
+CAND_0008049,71,0.4533,ML Engineer (6.3 yrs) in Pune; Maharashtra India; some relevant skills (RAG).
+CAND_0015578,72,0.4528,AI Engineer (5.4 yrs) in Delhi; Delhi India; some relevant skills (Embeddings | NLP); concerns: long notice period (90 days).
+CAND_0017178,73,0.4505,ML Engineer (4.2 yrs) in Hyderabad; Telangana India; some relevant skills (PEFT | QLoRA); concerns: under the JD's 5-year minimum (4.2 yrs).
+CAND_0009837,74,0.4471,Senior Data Scientist (4.3 yrs) in Noida; Uttar Pradesh India; some relevant skills (scikit-learn | TensorFlow); concerns: under the JD's 5-year minimum (4.3 yrs).
+CAND_0000031,75,0.4469,Recommendation Systems Engineer (6.0 yrs) in Hyderabad; Telangana India; some relevant skills (FAISS | Pinecone).
+CAND_0010603,76,0.4469,ML Engineer (5.3 yrs) in Bangalore; Karnataka India; some relevant skills (Deep Learning | Machine Learning); concerns: long notice period (90 days).
+CAND_0040178,77,0.4458,ML Engineer (5.0 yrs) in Pune; Maharashtra India; some relevant skills (Weaviate | Python).
+CAND_0007596,78,0.4444,Junior ML Engineer (4.4 yrs) in Delhi; Delhi India; some relevant skills (scikit-learn | Machine Learning); concerns: under the JD's 5-year minimum (4.4 yrs).
+CAND_0043637,79,0.4440,Junior ML Engineer (5.5 yrs) in Delhi; Delhi India; some relevant skills (PyTorch | Milvus).
+CAND_0004972,80,0.4415,ML Engineer (6.0 yrs) in Gurgaon; Haryana India; some relevant skills (RAG | PyTorch); concerns: long notice period (90 days).
+CAND_0066690,81,0.4413,ML Engineer (4.8 yrs) in Gurgaon; Haryana India; some relevant skills (PEFT | Elasticsearch); concerns: under the JD's 5-year minimum (4.8 yrs).
+CAND_0038368,82,0.4404,ML Engineer (5.4 yrs) in Hyderabad; Telangana India; some relevant skills (Embeddings | FAISS).
+CAND_0071432,83,0.4339,Data Scientist (4.1 yrs) in Hyderabad; Telangana India; some relevant skills (Weaviate | Pinecone); concerns: under the JD's 5-year minimum (4.1 yrs).
+CAND_0045475,84,0.4320,ML Engineer (4.9 yrs) in Delhi; Delhi India; some relevant skills (PyTorch | Pinecone); concerns: under the JD's 5-year minimum (4.9 yrs).
+CAND_0095213,85,0.4310,ML Engineer (5.1 yrs) in Gurgaon; Haryana India; some relevant skills (scikit-learn | Python).
+CAND_0082489,86,0.4283,ML Engineer (5.3 yrs) in Noida; Uttar Pradesh India; some relevant skills (Weaviate | PEFT); concerns: long notice period (90 days).
+CAND_0064888,87,0.4275,ML Engineer (5.8 yrs) in Vizag; Andhra Pradesh India; some relevant skills (Embeddings | TensorFlow).
+CAND_0025335,88,0.4214,Data Scientist (6.6 yrs) in Delhi; Delhi India; some relevant skills (NLP | TensorFlow).
+CAND_0056262,89,0.4213,Junior ML Engineer (6.0 yrs) in Bangalore; Karnataka India; some relevant skills (QLoRA | scikit-learn); concerns: below-average recruiter response rate (29%); long notice period (90 days).
+CAND_0040955,90,0.4207,Junior ML Engineer (6.6 yrs) in Pune; Maharashtra India; some relevant skills (PEFT | Embeddings).
+CAND_0000273,91,0.4171,ML Engineer (5.8 yrs) in Kolkata; West Bengal India; some relevant skills (Qdrant | Fine-tuning LLMs).
+CAND_0061550,92,0.4154,ML Engineer (5.3 yrs) in Noida; Uttar Pradesh India; some relevant skills (PyTorch | QLoRA).
+CAND_0065195,93,0.4149,Search Engineer (5.1 yrs) in Kolkata; West Bengal India; some relevant skills (QLoRA | scikit-learn).
+CAND_0047721,94,0.4148,Senior Data Scientist (7.0 yrs) in Coimbatore; Tamil Nadu India; some relevant skills (Milvus | RAG); concerns: long notice period (90 days).
+CAND_0081053,95,0.4148,NLP Engineer (5.4 yrs) in Chandigarh; Chandigarh India; some relevant skills (LoRA | QLoRA); concerns: long notice period (90 days).
+CAND_0018454,96,0.4130,Data Scientist (4.6 yrs) in Chennai; Tamil Nadu India; some relevant skills (Milvus | Deep Learning); concerns: under the JD's 5-year minimum (4.6 yrs).
+CAND_0099806,97,0.4101,AI Engineer (4.6 yrs) in Bhubaneswar; Odisha India; some relevant skills (LoRA | RAG); concerns: under the JD's 5-year minimum (4.6 yrs).
+CAND_0093912,98,0.4095,Senior Data Scientist (5.3 yrs) in Chandigarh; Chandigarh India; some relevant skills (Milvus | Embeddings).
+CAND_0017093,99,0.4091,ML Engineer (5.9 yrs) in Hyderabad; Telangana India; some relevant skills (Embeddings).
+CAND_0010257,100,0.4081,Senior Data Scientist (6.5 yrs) in Noida; Uttar Pradesh India; some relevant skills (Milvus | TensorFlow); concerns: long notice period (120 days).

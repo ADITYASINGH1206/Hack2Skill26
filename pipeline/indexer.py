@@ -17,27 +17,19 @@ from src.ml.config import (
     JD_VECTOR_PATH,
 )
 
-
-
 def extract_text(candidate: dict) -> str:
-    """
-    Build a text representation of the candidate for embedding.
-    Combines headline, summary, skill names, and recent career descriptions.
-    """
     profile = candidate.get("profile", {})
     parts = [
         profile.get("headline", ""),
         profile.get("summary", ""),
     ]
 
-    # Add skill names (with proficiency for context)
     for skill in candidate.get("skills", []):
         name = skill.get("name", "")
         prof = skill.get("proficiency", "")
         if name:
             parts.append(f"{name} ({prof})" if prof else name)
 
-    # Add recent career history (last 3 roles — most relevant)
     for role in candidate.get("career_history", [])[:3]:
         title = role.get("title", "")
         company = role.get("company", "")
@@ -52,16 +44,10 @@ def extract_text(candidate: dict) -> str:
 
 
 def tokenize(text: str) -> list[str]:
-    """Regex-based tokenizer: splits on word boundaries, lowercased."""
     return re.findall(r"\b\w+\b", text.lower())
 
-
-
 def extract_lean_meta(candidate: dict) -> dict:
-    """
-    Extract only the fields needed during the 5-minute inference window.
-    Keeps memory footprint small for 100K candidates.
-    """
+
     profile = candidate.get("profile", {})
     return {
         "candidate_id": candidate["candidate_id"],
@@ -73,7 +59,7 @@ def extract_lean_meta(candidate: dict) -> dict:
             "location": profile.get("location", ""),
             "country": profile.get("country", ""),
             "headline": profile.get("headline", ""),
-            "summary": profile.get("summary", "")[:200],  # truncated for reasoning
+            "summary": profile.get("summary", "")[:200],
             "current_company": profile.get("current_company", ""),
             "current_industry": profile.get("current_industry", ""),
         },
@@ -83,12 +69,10 @@ def extract_lean_meta(candidate: dict) -> dict:
 
 
 def main(input_file: str = "clean_pool.jsonl", output_dir: str = "."):
-    # ── Load candidates ──────────────────────────────────────────────────
     candidates = []
     texts = []
 
     if not os.path.exists(input_file):
-        # Fallback for development / testing
         fallback = os.path.join(
             "hackathon_rules_conditions",
             "[PUB] India_runs_data_and_ai_challenge",
@@ -114,7 +98,7 @@ def main(input_file: str = "clean_pool.jsonl", output_dir: str = "."):
 
     print(f"[OK] Loaded {len(candidates)} candidates")
 
-    # ── Step 2: Generate embeddings ──────────────────────────────────────
+    # Generate embeddings
     print(f"Loading model: {EMBEDDING_MODEL_NAME} ...")
     model = SentenceTransformer(EMBEDDING_MODEL_NAME)
 
@@ -128,11 +112,10 @@ def main(input_file: str = "clean_pool.jsonl", output_dir: str = "."):
         [SEMANTIC_JD_QUERY], normalize_embeddings=True
     )
 
-    # Ensure contiguous float32
     candidate_vectors = np.ascontiguousarray(candidate_vectors, dtype=np.float32)
     jd_vector = np.ascontiguousarray(jd_vector, dtype=np.float32)
 
-    # ── Step 3: Build FAISS dense index ──────────────────────────────────
+    # Build FAISS dense index
     print("Building FAISS IndexFlatIP ...")
     index = faiss.IndexFlatIP(EMBEDDING_DIMENSION)
     index.add(candidate_vectors)
@@ -143,7 +126,7 @@ def main(input_file: str = "clean_pool.jsonl", output_dir: str = "."):
     jd_vec_path = os.path.join(output_dir, JD_VECTOR_PATH)
     np.save(jd_vec_path, jd_vector)
 
-    # ── Step 4: Build BM25 sparse index ──────────────────────────────────
+    # Build BM25 sparse index
     print("Building BM25 index ...")
     tokenized_corpus = [tokenize(text) for text in texts]
     bm25 = BM25Okapi(tokenized_corpus)
@@ -152,7 +135,7 @@ def main(input_file: str = "clean_pool.jsonl", output_dir: str = "."):
     with open(bm25_path, "wb") as f:
         pickle.dump(bm25, f)
 
-    # ── Step 7: Save lean metadata ───────────────────────────────────────
+    # Save lean metadata
     print("Saving lean candidate metadata ...")
     lean_meta = [extract_lean_meta(c) for c in candidates]
 
@@ -160,7 +143,7 @@ def main(input_file: str = "clean_pool.jsonl", output_dir: str = "."):
     with open(meta_path, "wb") as f:
         pickle.dump(lean_meta, f)
 
-    # ── Report artifact sizes ────────────────────────────────────────────
+    # Report artifact sizes
     print("\n-- Artifact Sizes --")
     total = 0
     for name in [DENSE_INDEX_PATH, BM25_INDEX_PATH, CANDIDATES_META_PATH, JD_VECTOR_PATH]:

@@ -38,7 +38,7 @@ NON_TECH_TITLES = {
 # HONEYPOT DETECTION (Hard Drop)
 
 def is_honeypot(candidate: dict) -> bool:
-    # ── Check 1: Expert skills with 0 months duration ────────────────────
+    # Expert skills with 0 months duration
     expert_zeros = [
         s for s in candidate.get("skills", [])
         if s.get("proficiency", "").lower() in ("expert", "advanced") and s.get("duration_months", 1) == 0
@@ -46,7 +46,7 @@ def is_honeypot(candidate: dict) -> bool:
     if len(expert_zeros) >= 2:
         return True
 
-    # ── Check 2: Mass expert claims with suspiciously low durations ──────
+    # Mass expert claims with suspiciously low durations
     expert_skills = [
         s for s in candidate.get("skills", [])
         if s.get("proficiency") == "expert"
@@ -57,7 +57,7 @@ def is_honeypot(candidate: dict) -> bool:
         if avg_duration < 6:
             return True
 
-    # ── Check 3: Career duration impossibly exceeds stated experience ────
+    # Career duration impossibly exceeds stated experience
     history = candidate.get("career_history", [])
     total_career_months = sum(h.get("duration_months", 0) for h in history)
     stated_years = candidate.get("profile", {}).get("years_of_experience", 0)
@@ -65,7 +65,7 @@ def is_honeypot(candidate: dict) -> bool:
     if stated_months > 0 and total_career_months > stated_months * 1.5:
         return True
 
-    # ── Check 4: Date-math mismatch in individual roles ──────────────────
+    # Date-math mismatch in individual roles
     for role in history:
         start_str = role.get("start_date")
         end_str = role.get("end_date")
@@ -83,7 +83,7 @@ def is_honeypot(candidate: dict) -> bool:
             except (ValueError, TypeError):
                 pass
 
-    # ── Check 5: Overlapping career timelines ────────────────────────────
+    # Overlapping career timelines 
     dated_roles = []
     for role in history:
         start_str = role.get("start_date")
@@ -105,7 +105,7 @@ def is_honeypot(candidate: dict) -> bool:
         _, end_i = dated_roles[i]
         start_next, _ = dated_roles[i + 1]
         overlap_days = (end_i - start_next).days
-        if overlap_days > 60:  # > 60 days overlap = impossible
+        if overlap_days > 60:  
             return True
 
     return False
@@ -116,11 +116,9 @@ def is_honeypot(candidate: dict) -> bool:
 def is_non_technical_title(candidate: dict) -> bool:
     title = candidate.get("profile", {}).get("current_title", "").lower().strip()
 
-    # Direct match against known non-tech titles
     if title in NON_TECH_TITLES:
         return True
 
-    # Partial match for common non-tech patterns
     non_tech_patterns = [
         "marketing", "hr ", "human resource", "sales",
         "customer support", "customer service",
