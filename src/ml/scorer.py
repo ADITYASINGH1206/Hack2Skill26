@@ -614,18 +614,16 @@ def rank_candidates(
             "redrob_signals": candidate.get("redrob_signals", {}),
         })
 
+    # ── Normalize final scores to [0, 1] range ─────
+    # Divide by the actual maximum score in the batch to prevent any clipping at 1.0
+    # This preserves the exact relative differences between all candidates.
+    max_score = max(c["final_score"] for c in scored)
+    if max_score > 0:
+        for c in scored:
+            c["final_score"] = round(c["final_score"] / max_score, 4)
+
     # ── 5. Sort: score descending, tie-break on candidate_id ascending ───
     scored.sort(key=lambda x: (-x["final_score"], x["candidate_id"]))
-
-    # ── Normalize final scores to [0, 1] range using theoretical max ─────
-    # The maximum possible base score is 1.0
-    # The maximum multipliers are: Trajectory (1.3) * Location (1.3) = 1.69
-    THEORETICAL_MAX_SCORE = 1.69
-    
-    for c in scored:
-        # Divide by theoretical max to naturally bound between 0 and 1
-        # No candidate will be exactly 1.0 unless they are a perfect theoretical anomaly
-        c["final_score"] = min(c["final_score"] / THEORETICAL_MAX_SCORE, 1.0)
 
     # ── 6. Report ────────────────────────────────────────────────────────
     print(f"\n-- Results --")

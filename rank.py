@@ -102,22 +102,22 @@ def generate_reasoning(candidate: dict, rank: int) -> str:
 
     # Part 1: Title + Experience + Company (always included)
     if rank <= 10:
-        parts.append(f"{title} with {yoe:.1f} years of experience, currently at {company}")
+        parts.append(f"{title} with {yoe:.1f} years of experience currently at {company}")
     elif rank <= 50:
-        parts.append(f"{title} with {yoe:.1f} years, based in {location}")
+        parts.append(f"{title} with {yoe:.1f} years based in {location}")
     else:
-        parts.append(f"{title} ({yoe:.1f} yrs) in {location}, {country}")
+        parts.append(f"{title} ({yoe:.1f} yrs) in {location} {country}")
 
     # Part 2: JD-relevant skills (specific facts, no hallucination)
     if matched_jd_skills:
         if rank <= 20:
-            skill_str = ", ".join(matched_jd_skills[:4])
+            skill_str = " | ".join(matched_jd_skills[:4])
             parts.append(f"directly relevant skills include {skill_str}")
         elif rank <= 50:
-            skill_str = ", ".join(matched_jd_skills[:3])
+            skill_str = " | ".join(matched_jd_skills[:3])
             parts.append(f"relevant skills: {skill_str}")
         else:
-            skill_str = ", ".join(matched_jd_skills[:2])
+            skill_str = " | ".join(matched_jd_skills[:2])
             parts.append(f"some relevant skills ({skill_str})")
     else:
         if rank <= 50:
@@ -242,9 +242,13 @@ def write_submission_csv(scored_candidates: list, output_path: str):
                 score = prev_score
             prev_score = score
 
-            reasoning = generate_reasoning(candidate, rank)
+            # Remove any accidental commas to prevent CSV quotes
+            reasoning = generate_reasoning(candidate, rank).replace(",", ";")
 
-            writer.writerow([cid, rank, score, reasoning])
+            # Format score to exactly 4 decimal places
+            score_str = f"{score:.4f}"
+
+            writer.writerow([cid, rank, score_str, reasoning])
 
     print(f"\n[OK] Submission written to: {output_path}")
     print(f"     Rows: {len(top_100)} + 1 header = {len(top_100) + 1} total")
