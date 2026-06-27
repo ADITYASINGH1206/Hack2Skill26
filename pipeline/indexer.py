@@ -1,10 +1,3 @@
-"""
-indexer.py — Offline Embedding & Index Generation (Steps 1-4, 7)
-
-Run this ONCE before inference. No time limit.
-Generates: dense_index.faiss, bm25_index.pkl, candidates_meta.pkl, jd_vector.npy
-"""
-
 import json
 import re
 import os
@@ -25,7 +18,6 @@ from src.ml.config import (
 )
 
 
-# ── Text extraction ──────────────────────────────────────────────────────────
 
 def extract_text(candidate: dict) -> str:
     """
@@ -58,14 +50,12 @@ def extract_text(candidate: dict) -> str:
     return " ".join(filter(None, parts))
 
 
-# ── BM25 tokenizer ──────────────────────────────────────────────────────────
 
 def tokenize(text: str) -> list[str]:
     """Regex-based tokenizer: splits on word boundaries, lowercased."""
     return re.findall(r"\b\w+\b", text.lower())
 
 
-# ── Lean metadata extractor ─────────────────────────────────────────────────
 
 def extract_lean_meta(candidate: dict) -> dict:
     """
@@ -91,7 +81,6 @@ def extract_lean_meta(candidate: dict) -> dict:
     }
 
 
-# ── Main pipeline ───────────────────────────────────────────────────────────
 
 def main(input_file: str = "clean_pool.jsonl", output_dir: str = "."):
     # ── Load candidates ──────────────────────────────────────────────────

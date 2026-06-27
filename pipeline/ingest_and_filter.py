@@ -1,26 +1,10 @@
-"""
-cleaner.py -- Phase 1: Data Ingestion & Hard Trap Filter
-
-Streams candidates.jsonl in O(1) memory and drops candidates
-that are mathematically impossible (honeypots) or completely
-irrelevant (non-technical titles).
-
-This is a PRE-COMPUTATION step that runs BEFORE embedding generation.
-It reduces the dataset size, saving compute time and disk space.
-
-Usage:
-    python -m src.data.cleaner candidates.jsonl clean_pool.jsonl
-"""
-
 import json
 import sys
 import time
 from datetime import datetime
 
 
-# =============================================================================
 # HARD DROP RULES (Binary — candidate is permanently removed)
-# =============================================================================
 
 # Non-technical titles that should never appear in an AI Engineering search.
 # These are the "keyword stuffer" traps described in the hackathon rules.
@@ -55,9 +39,7 @@ NON_TECH_TITLES = {
 }
 
 
-# =============================================================================
 # HONEYPOT DETECTION (Hard Drop)
-# =============================================================================
 
 def is_honeypot(candidate: dict) -> bool:
     """
@@ -139,9 +121,7 @@ def is_honeypot(candidate: dict) -> bool:
     return False
 
 
-# =============================================================================
 # NON-TECHNICAL TITLE CHECK (Hard Drop)
-# =============================================================================
 
 def is_non_technical_title(candidate: dict) -> bool:
     """
@@ -179,9 +159,7 @@ def is_non_technical_title(candidate: dict) -> bool:
     return False
 
 
-# =============================================================================
 # WRONG DOMAIN CHECK (Hard Drop)
-# =============================================================================
 
 def is_wrong_domain(candidate: dict) -> bool:
     """
@@ -208,9 +186,7 @@ def is_wrong_domain(candidate: dict) -> bool:
     return (cv_hits >= 3 and nlp_hits == 0)
 
 
-# =============================================================================
 # MAIN PIPELINE
-# =============================================================================
 
 def clean_candidates(input_path: str, output_path: str):
     """
@@ -279,9 +255,7 @@ def clean_candidates(input_path: str, output_path: str):
     print(f"{'=' * 60}")
 
 
-# =============================================================================
 # CLI ENTRY POINT
-# =============================================================================
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:

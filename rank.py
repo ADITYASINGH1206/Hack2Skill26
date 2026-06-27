@@ -1,13 +1,6 @@
-"""
-config.py â€” Single source of truth for all Role 2 constants.
-Imported by both indexer.py and scorer.py to prevent drift.
-"""
-
 import os
 
-# =============================================================================
 # JD QUERIES â€” Dual strategy: semantic (natural language) + BM25 (keywords)
-# =============================================================================
 
 SEMANTIC_JD_QUERY = """
 Senior AI Engineer with 6 to 8 years of applied machine learning experience at product companies.
@@ -33,23 +26,17 @@ product company startup SaaS platform scale
 data pipeline feature engineering model serving inference optimization
 """
 
-# =============================================================================
 # EMBEDDING MODEL
-# =============================================================================
 
 EMBEDDING_MODEL_NAME = "BAAI/bge-base-en-v1.5"
 EMBEDDING_DIMENSION = 768
 
-# =============================================================================
 # SCORING WEIGHTS â€” Hybrid fusion
-# =============================================================================
 
 SEMANTIC_WEIGHT = 0.65
 BM25_WEIGHT = 0.35
 
-# =============================================================================
 # CONSULTING FIRMS â€” Career trajectory penalty
-# =============================================================================
 
 CONSULTING_FIRMS = {
     'tcs', 'tata consultancy', 'infosys', 'wipro', 'accenture',
@@ -59,9 +46,7 @@ CONSULTING_FIRMS = {
     'birlasoft', 'coforge', 'sonata software', 'mastek',
 }
 
-# =============================================================================
 # TITLE RELEVANCE TIERS â€” Keyword stuffer detection
-# =============================================================================
 
 TITLE_TIER_PERFECT = {
     'ai engineer', 'ml engineer', 'machine learning engineer',
@@ -108,9 +93,7 @@ TITLE_SCORES = {
     'non_tech_trap': 0.05,
 }
 
-# =============================================================================
 # EXPERIENCE RANGE â€” JD says 5-9 years
-# =============================================================================
 
 EXPERIENCE_SCORES = [
     # (min_years, max_years, multiplier)
@@ -123,9 +106,7 @@ EXPERIENCE_SCORES = [
     (15, 100, 0.3),   # Poor fit â€” too senior
 ]
 
-# =============================================================================
 # LOCATION SCORING â€” JD prefers Pune/Noida/India
-# =============================================================================
 
 PREFERRED_CITIES_TIER1 = {
     'pune', 'noida', 'delhi', 'new delhi', 'gurgaon', 'gurugram',
@@ -145,9 +126,7 @@ LOCATION_SCORES = {
     'outside_india_no_relocate': 0.2,
 }
 
-# =============================================================================
 # HONEYPOT THRESHOLDS
-# =============================================================================
 
 HONEYPOT_DATE_MISMATCH_TOLERANCE = 0.5  # 50% discrepancy between date-calculated and stated duration
 HONEYPOT_CAREER_OVERLAP_DAYS = 60       # Max acceptable days of overlap between roles
@@ -155,9 +134,7 @@ HONEYPOT_EXPERT_COUNT_THRESHOLD = 8     # Flag if 8+ expert skills
 HONEYPOT_EXPERT_AVG_DURATION_MIN = 6    # Flag if avg duration of expert skills < 6 months
 HONEYPOT_EXPERIENCE_RATIO = 1.5         # Flag if total career months > years_of_experience * 12 * this
 
-# =============================================================================
 # ARTIFACT FILE PATHS
-# =============================================================================
 
 ARTIFACTS_DIR = "artifacts"
 DENSE_INDEX_PATH = os.path.join(ARTIFACTS_DIR, "faiss_index_v2.bin")
@@ -189,9 +166,7 @@ def tokenize(text: str) -> list[str]:
     return re.findall(r"\b\w+\b", text.lower())
 
 
-# =============================================================================
 # STEP 5A: Honeypot Detection
-# =============================================================================
 
 def is_honeypot(candidate: dict) -> bool:
     """
@@ -268,9 +243,7 @@ def is_honeypot(candidate: dict) -> bool:
     return False
 
 
-# =============================================================================
 # STEP 5B: Title Relevance Score
-# =============================================================================
 
 def title_relevance_score(candidate: dict) -> float:
     """
@@ -290,9 +263,7 @@ def title_relevance_score(candidate: dict) -> float:
     return TITLE_SCORES["non_tech_trap"]
 
 
-# =============================================================================
 # STEP 5C: Career Trajectory Score
-# =============================================================================
 
 def career_trajectory_score(candidate: dict) -> float:
     """
@@ -333,9 +304,7 @@ def career_trajectory_score(candidate: dict) -> float:
     return score
 
 
-# =============================================================================
 # STEP 5D: Experience Range Score
-# =============================================================================
 
 def experience_range_score(candidate: dict) -> float:
     """
@@ -354,9 +323,7 @@ def experience_range_score(candidate: dict) -> float:
     return 0.3  # Fallback
 
 
-# =============================================================================
 # STEP 5E: Location Score
-# =============================================================================
 
 def location_score(candidate: dict) -> float:
     """
@@ -389,9 +356,7 @@ def location_score(candidate: dict) -> float:
         return LOCATION_SCORES["outside_india_no_relocate"]
 
 
-# =============================================================================
 # STEP 6: Final Score Combination
-# =============================================================================
 
 def compute_final_score(
     semantic_sim: float,
@@ -423,9 +388,7 @@ def compute_final_score(
     return hybrid
 
 
-# =============================================================================
 # STEP 5F: Pure Researcher Penalty (Soft Filter)
-# =============================================================================
 
 def pure_researcher_penalty(candidate: dict) -> float:
     """
@@ -461,9 +424,7 @@ def pure_researcher_penalty(candidate: dict) -> float:
     return 1.0
 
 
-# =============================================================================
 # STEP 5G: Notice Period Penalty (Soft Filter)
-# =============================================================================
 
 def notice_period_penalty(candidate: dict) -> float:
     """
@@ -484,9 +445,7 @@ def notice_period_penalty(candidate: dict) -> float:
         return 0.5   # Very long â€” significant penalty
 
 
-# =============================================================================
 # STEP 5H: Title Chaser Penalty (Soft Filter)
-# =============================================================================
 
 def title_chaser_penalty(candidate: dict) -> float:
     """
@@ -522,9 +481,7 @@ def title_chaser_penalty(candidate: dict) -> float:
     return 1.0
 
 
-# =============================================================================
 # NEW JD-SPECIFIC SOFT FILTERS
-# =============================================================================
 
 def non_coding_architect_penalty(candidate: dict) -> float:
     """
@@ -572,9 +529,7 @@ def closed_source_penalty(candidate: dict) -> float:
     return 1.0
 
 
-# =============================================================================
 # Behavioral Multiplier
-# =============================================================================
 
 def get_behavioral_multiplier(candidate: dict) -> float:
     """
@@ -626,10 +581,8 @@ def get_behavioral_multiplier(candidate: dict) -> float:
     elif interview_rate > 0.85:
         mult *= 1.12
 
-    # ==========================================
-    # POSITIVE BOOST LOGIC
-    # ==========================================
-    
+        # POSITIVE BOOST LOGIC
+        
     # Boost 1: High demand (saved by recruiters)
     saves = signals.get("saved_by_recruiters_30d", 0)
     if saves > 10:
@@ -651,9 +604,7 @@ def get_behavioral_multiplier(candidate: dict) -> float:
     return mult
 
 
-# =============================================================================
 # MAIN RANKING PIPELINE
-# =============================================================================
 
 def rank_candidates(
     top_k: int = 100,
@@ -826,9 +777,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 # from src.ml.scorer import rank_candidates
 
 
-# =============================================================================
 # REASONING ENGINE
-# =============================================================================
 
 # JD core requirements for connecting reasoning to the job description
 JD_CORE_SKILLS = {
@@ -1019,9 +968,7 @@ def generate_reasoning(candidate: dict, rank: int) -> str:
     return reasoning
 
 
-# =============================================================================
 # SUBMISSION CSV WRITER
-# =============================================================================
 
 def write_submission_csv(scored_candidates: list, output_path: str):
     """
@@ -1060,9 +1007,7 @@ def write_submission_csv(scored_candidates: list, output_path: str):
     print(f"     Rows: {len(top_100)} + 1 header = {len(top_100) + 1} total")
 
 
-# =============================================================================
 # VALIDATION
-# =============================================================================
 
 def validate_submission(output_path: str):
     """Run local validation checks matching the hackathon auto-validator."""
@@ -1136,9 +1081,7 @@ def validate_submission(output_path: str):
             print(f"  Rank {sample_rank}: {r['reasoning'][:120]}...")
 
 
-# =============================================================================
 # MAIN
-# =============================================================================
 
 def main():
     parser = argparse.ArgumentParser(description="Redrob Hackathon - Produce submission CSV")
