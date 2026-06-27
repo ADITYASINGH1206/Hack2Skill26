@@ -15,6 +15,7 @@ clean_pool.jsonl
 artifacts/*.faiss
 artifacts/*.pkl
 artifacts/*.npy
+artifacts/*.bin
 *.zip
 bin_submission/
 
@@ -22,6 +23,8 @@ bin_submission/
 *.faiss
 *.pkl
 *.npy
+*.bin
+*.csv
 
 # =============================================================================
 # Python
