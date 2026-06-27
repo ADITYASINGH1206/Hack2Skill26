@@ -2,8 +2,6 @@ import json
 import sys
 import time
 from datetime import datetime
-
-
 # HARD DROP RULES (Binary — candidate is permanently removed)
 
 # Non-technical titles that should never appear in an AI Engineering search.
@@ -37,17 +35,9 @@ NON_TECH_TITLES = {
     "warehouse manager",
     "retail manager", "store manager",
 }
-
-
 # HONEYPOT DETECTION (Hard Drop)
 
 def is_honeypot(candidate: dict) -> bool:
-    """
-    Detect candidates with mathematically impossible profiles.
-    These are the ~80 honeypot candidates planted in the dataset.
-    
-    Returns True if any impossibility is detected.
-    """
     # ── Check 1: Expert skills with 0 months duration ────────────────────
     expert_zeros = [
         s for s in candidate.get("skills", [])
@@ -124,10 +114,6 @@ def is_honeypot(candidate: dict) -> bool:
 # NON-TECHNICAL TITLE CHECK (Hard Drop)
 
 def is_non_technical_title(candidate: dict) -> bool:
-    """
-    Check if the candidate's current title is completely irrelevant
-    to the AI Engineering role. These are keyword-stuffer traps.
-    """
     title = candidate.get("profile", {}).get("current_title", "").lower().strip()
 
     # Direct match against known non-tech titles
@@ -162,11 +148,6 @@ def is_non_technical_title(candidate: dict) -> bool:
 # WRONG DOMAIN CHECK (Hard Drop)
 
 def is_wrong_domain(candidate: dict) -> bool:
-    """
-    If a candidate has 3+ skills in Robotics/Computer Vision/Self-Driving,
-    but ZERO skills in NLP/Retrieval/Search, drop them.
-    This prevents irrelevant AI researchers from clogging the ranks.
-    """
     skills = candidate.get("skills", [])
     if not skills:
         return False
@@ -189,10 +170,6 @@ def is_wrong_domain(candidate: dict) -> bool:
 # MAIN PIPELINE
 
 def clean_candidates(input_path: str, output_path: str):
-    """
-    Stream candidates.jsonl, apply hard filters, write clean_pool.jsonl.
-    O(1) memory — processes one candidate at a time.
-    """
     print("=" * 60)
     print("  PHASE 1: DATA INGESTION & HARD TRAP FILTER")
     print("=" * 60)
