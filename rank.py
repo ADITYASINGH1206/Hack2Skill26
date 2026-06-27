@@ -255,9 +255,8 @@ def career_trajectory_score(candidate: dict) -> float:
     score = 1.0
     history = candidate.get("career_history", [])
     if not history:
-        return 0.5  # No career history - weak signal
+        return 0.5
 
-    # Check if entire career is consulting
     consulting_months = 0
     total_months = 0
     for role in history:
@@ -268,9 +267,8 @@ def career_trajectory_score(candidate: dict) -> float:
             consulting_months += dur
             
     if total_months > 0 and (consulting_months / total_months) > 0.95:
-        score *= 0.1  # Heavy penalty for pure consultants
+        score *= 0.1 
 
-    # Calculate product company experience
     product_months = 0
     for role in history:
         company = role.get("company", "").lower()
@@ -287,7 +285,7 @@ def career_trajectory_score(candidate: dict) -> float:
     return score
 
 
-# STEP 5D: Experience Range Score
+# Experience Range Score
 
 def experience_range_score(candidate: dict) -> float:
     """
@@ -306,7 +304,7 @@ def experience_range_score(candidate: dict) -> float:
     return 0.3  # Fallback
 
 
-# STEP 5E: Location Score
+# Location Score
 
 def location_score(candidate: dict) -> float:
     """
@@ -339,7 +337,7 @@ def location_score(candidate: dict) -> float:
         return LOCATION_SCORES["outside_india_no_relocate"]
 
 
-# STEP 6: Final Score Combination
+#Final Score Combination
 
 def compute_final_score(
     semantic_sim: float,
@@ -371,7 +369,7 @@ def compute_final_score(
     return hybrid
 
 
-# STEP 5F: Pure Researcher Penalty (Soft Filter)
+#Pure Researcher Penalty (Soft Filter)
 
 def pure_researcher_penalty(candidate: dict) -> float:
     """
@@ -382,7 +380,7 @@ def pure_researcher_penalty(candidate: dict) -> float:
     """
     history = candidate.get("career_history", [])
     if not history:
-        return 1.0  # No data â€” don't penalize
+        return 1.0
 
     research_titles = {
         "professor", "researcher", "research assistant", "research associate",
@@ -397,17 +395,15 @@ def pure_researcher_penalty(candidate: dict) -> float:
         if any(rt in title for rt in research_titles):
             research_count += 1
 
-    # If ALL roles are research/academic -> heavy penalty
     if research_count == len(history):
         return 0.2
-    # If most roles are research -> moderate penalty
     elif research_count > len(history) * 0.7:
         return 0.5
 
     return 1.0
 
 
-# STEP 5G: Notice Period Penalty (Soft Filter)
+#Notice Period Penalty (Soft Filter)
 
 def notice_period_penalty(candidate: dict) -> float:
     """
@@ -428,7 +424,7 @@ def notice_period_penalty(candidate: dict) -> float:
         return 0.5   # Very long significant penalty
 
 
-# STEP 5H: Title Chaser Penalty (Soft Filter)
+# Title Chaser Penalty (Soft Filter)
 
 def title_chaser_penalty(candidate: dict) -> float:
     """
@@ -442,7 +438,6 @@ def title_chaser_penalty(candidate: dict) -> float:
     if not history or yoe < 3 or len(history) < 2:
         return 1.0  
 
-    # Count unique companies
     companies = set()
     for role in history:
         company = role.get("company", "").lower().strip()
@@ -484,10 +479,6 @@ def non_coding_architect_penalty(candidate: dict) -> float:
     return 1.0
 
 def langchain_wrapper_penalty(candidate: dict) -> float:
-    """
-    JD: If your 'AI experience' consists primarily of recent projects using 
-    LangChain to call OpenAI without pre-LLM-era ML production experience...
-    """
     skills = [s.get("name", "").lower() for s in candidate.get("skills", [])]
     
     has_wrapper = any(w in sk for w in ["langchain", "openai", "llama_index"] for sk in skills)
@@ -498,10 +489,7 @@ def langchain_wrapper_penalty(candidate: dict) -> float:
     return 1.0
 
 def closed_source_penalty(candidate: dict) -> float:
-    """
-    JD: People whose work has been entirely on closed-source proprietary systems 
-    for 5+ years without external validation (papers, talks, open-source).
-    """
+
     yoe = candidate.get("profile", {}).get("years_of_experience", 0)
     github_score = candidate.get("redrob_signals", {}).get("github_activity_score", -1)
     
@@ -537,10 +525,7 @@ def keyword_stuffer_penalty(candidate: dict) -> float:
 # Behavioral Multiplier
 
 def get_behavioral_multiplier(candidate: dict) -> float:
-    """
-    Compute a behavioral quality multiplier from the 23 Redrob signals.
-    Penalizes unresponsive and inactive candidates.
-    """
+
     signals = candidate.get("redrob_signals", {})
     mult = 1.0
 
@@ -611,9 +596,7 @@ def get_behavioral_multiplier(candidate: dict) -> float:
 def rank_candidates(
     top_k: int = 100,
 ) -> list[dict]:
-    """
-    Load pre-built artifacts, compute all scoring layers, return ranked top-K.
-    """
+
 
     #Load artifacts
     print("Loading artifacts ...")
@@ -755,31 +738,17 @@ if __name__ == "__main__":
     rank_candidates()
 
 
-"""
-rank.py -- Final Ranking Script (Role 3)
-
-Produces the submission CSV from pre-computed artifacts.
-This is the script judges will run inside the 5-minute sandbox.
-
-Usage:
-    python rank.py --candidates candidates.jsonl --out submission.csv
-"""
-
 import os
 import sys
 import csv
 import time
 import argparse
 
-# Add project root to path
+#root to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-# from src.ml.scorer import rank_candidates
 
 
 # REASONING ENGINE
-
-# JD core requirements for connecting reasoning to the job description
 JD_CORE_SKILLS = {
     "faiss", "pinecone", "weaviate", "qdrant", "milvus", "elasticsearch",
     "sentence-transformers", "bge", "e5", "embeddings",
@@ -816,16 +785,14 @@ def generate_reasoning(candidate: dict, rank: int) -> str:
     company = profile.get("current_company", "Unknown")
     industry = profile.get("current_industry", "")
 
-    # Extract actual skill names from the candidate's profile (no hallucination)
     skill_names = [s.get("name", "").lower() for s in skills]
     skill_names_display = [s.get("name", "") for s in skills]
 
-    # Find JD-relevant skills this candidate actually has
     matched_jd_skills = []
     for s in skill_names_display:
         if s.lower() in JD_CORE_SKILLS:
             matched_jd_skills.append(s)
-    # Also check partial matches (e.g., "Machine Learning" contains "machine learning")
+
     for s in skill_names_display:
         sl = s.lower()
         for jd_skill in JD_CORE_SKILLS:
@@ -940,13 +907,11 @@ def generate_reasoning(candidate: dict, rank: int) -> str:
         concerns.append("profile contains timeline inconsistencies suggesting data integrity issues")
 
     #Assemble final reasoning
-
-    # Add strengths
     if strengths and rank <= 60:
         top_strengths = strengths[:2] if rank <= 30 else strengths[:1]
         parts.append("; ".join(top_strengths))
 
-    # Add concerns (honest acknowledgment)
+    # Add concerns
     if concerns:
         if rank <= 10:
             if len(concerns) == 1:
@@ -1003,7 +968,6 @@ def write_submission_csv(scored_candidates: list, output_path: str):
 # VALIDATION
 
 def validate_submission(output_path: str):
-    """Run local validation checks matching the hackathon auto-validator."""
     print("\n-- Submission Validation --")
     errors = []
 
