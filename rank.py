@@ -1,13 +1,6 @@
-"""
-config.py â€” Single source of truth for all Role 2 constants.
-Imported by both indexer.py and scorer.py to prevent drift.
-"""
-
 import os
 
-# =============================================================================
-# JD QUERIES â€” Dual strategy: semantic (natural language) + BM25 (keywords)
-# =============================================================================
+# JD QUERIES Dual strategy: semantic (natural language) + BM25 (keywords)
 
 SEMANTIC_JD_QUERY = """
 Senior AI Engineer with 6 to 8 years of applied machine learning experience at product companies.
@@ -32,24 +25,15 @@ NLP natural language processing text classification named entity recognition
 product company startup SaaS platform scale
 data pipeline feature engineering model serving inference optimization
 """
-
-# =============================================================================
 # EMBEDDING MODEL
-# =============================================================================
 
 EMBEDDING_MODEL_NAME = "BAAI/bge-base-en-v1.5"
 EMBEDDING_DIMENSION = 768
 
-# =============================================================================
-# SCORING WEIGHTS â€” Hybrid fusion
-# =============================================================================
+# SCORING WEIGHTS
 
 SEMANTIC_WEIGHT = 0.65
 BM25_WEIGHT = 0.35
-
-# =============================================================================
-# CONSULTING FIRMS â€” Career trajectory penalty
-# =============================================================================
 
 CONSULTING_FIRMS = {
     'tcs', 'tata consultancy', 'infosys', 'wipro', 'accenture',
@@ -59,10 +43,7 @@ CONSULTING_FIRMS = {
     'birlasoft', 'coforge', 'sonata software', 'mastek',
 }
 
-# =============================================================================
-# TITLE RELEVANCE TIERS â€” Keyword stuffer detection
-# =============================================================================
-
+# TITLE RELEVANCE
 TITLE_TIER_PERFECT = {
     'ai engineer', 'ml engineer', 'machine learning engineer',
     'senior ai engineer', 'senior ml engineer', 'senior machine learning engineer',
@@ -96,10 +77,6 @@ TITLE_TIER_WEAK_ADJACENT = {
     'technical lead', 'engineering manager',
 }
 
-# Anything not in the above tiers is treated as NON_TECH_TRAP with 0.05 multiplier.
-# This includes: HR Manager, Marketing Manager, Sales Executive, Accountant,
-# Content Writer, Graphic Designer, Customer Support, Civil Engineer,
-# Mechanical Engineer, Operations Manager, etc.
 
 TITLE_SCORES = {
     'perfect': 1.0,
@@ -108,24 +85,19 @@ TITLE_SCORES = {
     'non_tech_trap': 0.05,
 }
 
-# =============================================================================
-# EXPERIENCE RANGE â€” JD says 5-9 years
-# =============================================================================
+# EXPERIENCE RANGE 5-9 years
 
 EXPERIENCE_SCORES = [
-    # (min_years, max_years, multiplier)
     (5, 9, 1.0),      # Sweet spot
-    (4, 5, 0.85),     # Close â€” slightly under
-    (9, 12, 0.85),    # Close â€” slightly over
-    (3, 4, 0.6),      # Stretch â€” junior
-    (12, 15, 0.6),    # Stretch â€” too senior
-    (0, 3, 0.3),      # Poor fit â€” too junior
-    (15, 100, 0.3),   # Poor fit â€” too senior
+    (4, 5, 0.7),     # Close slightly under
+    (9, 12, 0.75),    # Close slightly over
+    (3, 4, 0.55),      # Stretch junior
+    (12, 15, 0.6),    # Stretch too senior
+    (0, 3, 0.3),      # Poor fit too junior
+    (15, 100, 0.3),   # Poor fit too senior
 ]
 
-# =============================================================================
-# LOCATION SCORING â€” JD prefers Pune/Noida/India
-# =============================================================================
+# LOCATION SCORING JD prefers Pune/Noida/India
 
 PREFERRED_CITIES_TIER1 = {
     'pune', 'noida', 'delhi', 'new delhi', 'gurgaon', 'gurugram',
@@ -145,9 +117,7 @@ LOCATION_SCORES = {
     'outside_india_no_relocate': 0.2,
 }
 
-# =============================================================================
 # HONEYPOT THRESHOLDS
-# =============================================================================
 
 HONEYPOT_DATE_MISMATCH_TOLERANCE = 0.5  # 50% discrepancy between date-calculated and stated duration
 HONEYPOT_CAREER_OVERLAP_DAYS = 60       # Max acceptable days of overlap between roles
@@ -155,9 +125,7 @@ HONEYPOT_EXPERT_COUNT_THRESHOLD = 8     # Flag if 8+ expert skills
 HONEYPOT_EXPERT_AVG_DURATION_MIN = 6    # Flag if avg duration of expert skills < 6 months
 HONEYPOT_EXPERIENCE_RATIO = 1.5         # Flag if total career months > years_of_experience * 12 * this
 
-# =============================================================================
 # ARTIFACT FILE PATHS
-# =============================================================================
 
 ARTIFACTS_DIR = "artifacts"
 DENSE_INDEX_PATH = os.path.join(ARTIFACTS_DIR, "faiss_index_v2.bin")
@@ -166,12 +134,6 @@ CANDIDATES_META_PATH = os.path.join(ARTIFACTS_DIR, "candidates_meta.pkl")
 JD_VECTOR_PATH = os.path.join(ARTIFACTS_DIR, "jd_vector.npy")
 
 
-"""
-scorer.py â€” Multi-Layer Scoring Engine (Steps 5-6)
-
-Runs during the strict 5-minute inference window.
-Loads pre-built artifacts, computes 5 scoring layers, produces ranked top-100.
-"""
 
 import re
 import os
@@ -183,27 +145,25 @@ import faiss
 
 
 
-# â”€â”€ BM25 tokenizer (must match indexer.py) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# BM25 tokenizer (must match indexer.py)
 
 def tokenize(text: str) -> list[str]:
     return re.findall(r"\b\w+\b", text.lower())
 
 
-# =============================================================================
-# STEP 5A: Honeypot Detection
-# =============================================================================
+# Honeypot Detection
 
 def is_honeypot(candidate: dict) -> bool:
     """
     Detect candidates with subtly impossible profiles.
     Returns True if any honeypot signal fires.
     """
-    # â”€â”€ Check 1: Expert skills with 0 duration_months â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    #Expert skills with 0 duration_months 
     for skill in candidate.get("skills", []):
         if skill.get("proficiency") == "expert" and skill.get("duration_months", 1) == 0:
             return True
 
-    # â”€â”€ Check 2: Mass expert claims with low durations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    #Mass expert claims with low durations
     expert_skills = [
         s for s in candidate.get("skills", [])
         if s.get("proficiency") == "expert"
@@ -214,7 +174,7 @@ def is_honeypot(candidate: dict) -> bool:
         if avg_duration < HONEYPOT_EXPERT_AVG_DURATION_MIN:
             return True
 
-    # â”€â”€ Check 3: Career duration exceeds stated experience â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # Career duration exceeds stated experience 
     history = candidate.get("career_history", [])
     total_career_months = sum(h.get("duration_months", 0) for h in history)
     stated_years = candidate.get("profile", {}).get("years_of_experience", 0)
@@ -222,7 +182,7 @@ def is_honeypot(candidate: dict) -> bool:
     if stated_months > 0 and total_career_months > stated_months * HONEYPOT_EXPERIENCE_RATIO:
         return True
 
-    # â”€â”€ Check 4: Date-math mismatch â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    #Date-math mismatch 
     for role in history:
         start_str = role.get("start_date")
         end_str = role.get("end_date")
@@ -240,7 +200,7 @@ def is_honeypot(candidate: dict) -> bool:
             except (ValueError, TypeError):
                 pass
 
-    # â”€â”€ Check 5: Overlapping career timelines â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    #Overlapping career timelines 
     dated_roles = []
     for role in history:
         start_str = role.get("start_date")
@@ -268,9 +228,7 @@ def is_honeypot(candidate: dict) -> bool:
     return False
 
 
-# =============================================================================
-# STEP 5B: Title Relevance Score
-# =============================================================================
+#Title Relevance Score
 
 def title_relevance_score(candidate: dict) -> float:
     """
@@ -285,14 +243,10 @@ def title_relevance_score(candidate: dict) -> float:
         return TITLE_SCORES["strong_adjacent"]
     if title in TITLE_TIER_WEAK_ADJACENT:
         return TITLE_SCORES["weak_adjacent"]
-
-    # Everything else is a non-tech trap
     return TITLE_SCORES["non_tech_trap"]
 
 
-# =============================================================================
-# STEP 5C: Career Trajectory Score
-# =============================================================================
+#Career Trajectory Score
 
 def career_trajectory_score(candidate: dict) -> float:
     """
@@ -301,9 +255,8 @@ def career_trajectory_score(candidate: dict) -> float:
     score = 1.0
     history = candidate.get("career_history", [])
     if not history:
-        return 0.5  # No career history - weak signal
+        return 0.5
 
-    # Check if entire career is consulting
     consulting_months = 0
     total_months = 0
     for role in history:
@@ -314,9 +267,8 @@ def career_trajectory_score(candidate: dict) -> float:
             consulting_months += dur
             
     if total_months > 0 and (consulting_months / total_months) > 0.95:
-        score *= 0.1  # Heavy penalty for pure consultants
+        score *= 0.1 
 
-    # Calculate product company experience
     product_months = 0
     for role in history:
         company = role.get("company", "").lower()
@@ -333,9 +285,7 @@ def career_trajectory_score(candidate: dict) -> float:
     return score
 
 
-# =============================================================================
-# STEP 5D: Experience Range Score
-# =============================================================================
+# Experience Range Score
 
 def experience_range_score(candidate: dict) -> float:
     """
@@ -354,9 +304,7 @@ def experience_range_score(candidate: dict) -> float:
     return 0.3  # Fallback
 
 
-# =============================================================================
-# STEP 5E: Location Score
-# =============================================================================
+# Location Score
 
 def location_score(candidate: dict) -> float:
     """
@@ -389,9 +337,7 @@ def location_score(candidate: dict) -> float:
         return LOCATION_SCORES["outside_india_no_relocate"]
 
 
-# =============================================================================
-# STEP 6: Final Score Combination
-# =============================================================================
+#Final Score Combination
 
 def compute_final_score(
     semantic_sim: float,
@@ -423,9 +369,7 @@ def compute_final_score(
     return hybrid
 
 
-# =============================================================================
-# STEP 5F: Pure Researcher Penalty (Soft Filter)
-# =============================================================================
+#Pure Researcher Penalty (Soft Filter)
 
 def pure_researcher_penalty(candidate: dict) -> float:
     """
@@ -436,7 +380,7 @@ def pure_researcher_penalty(candidate: dict) -> float:
     """
     history = candidate.get("career_history", [])
     if not history:
-        return 1.0  # No data â€” don't penalize
+        return 1.0
 
     research_titles = {
         "professor", "researcher", "research assistant", "research associate",
@@ -451,19 +395,15 @@ def pure_researcher_penalty(candidate: dict) -> float:
         if any(rt in title for rt in research_titles):
             research_count += 1
 
-    # If ALL roles are research/academic -> heavy penalty
     if research_count == len(history):
         return 0.2
-    # If most roles are research -> moderate penalty
     elif research_count > len(history) * 0.7:
         return 0.5
 
     return 1.0
 
 
-# =============================================================================
-# STEP 5G: Notice Period Penalty (Soft Filter)
-# =============================================================================
+#Notice Period Penalty (Soft Filter)
 
 def notice_period_penalty(candidate: dict) -> float:
     """
@@ -481,12 +421,10 @@ def notice_period_penalty(candidate: dict) -> float:
     elif notice_days <= 90:
         return 0.7   # High bar
     else:
-        return 0.5   # Very long â€” significant penalty
+        return 0.5   # Very long significant penalty
 
 
-# =============================================================================
-# STEP 5H: Title Chaser Penalty (Soft Filter)
-# =============================================================================
+# Title Chaser Penalty (Soft Filter)
 
 def title_chaser_penalty(candidate: dict) -> float:
     """
@@ -498,9 +436,8 @@ def title_chaser_penalty(candidate: dict) -> float:
     yoe = candidate.get("profile", {}).get("years_of_experience", 0)
 
     if not history or yoe < 3 or len(history) < 2:
-        return 1.0  # Not enough data or too junior to judge
+        return 1.0  
 
-    # Count unique companies
     companies = set()
     for role in history:
         company = role.get("company", "").lower().strip()
@@ -513,18 +450,14 @@ def title_chaser_penalty(candidate: dict) -> float:
     avg_tenure_years = yoe / len(companies)
 
     if avg_tenure_years < 1.0:
-        return 0.4   # Extreme job-hopper
+        return 0.4   
     elif avg_tenure_years < 1.5:
-        return 0.6   # Frequent switcher
+        return 0.6  
     elif avg_tenure_years < 2.0:
-        return 0.85  # Slight concern
+        return 0.85  
 
     return 1.0
 
-
-# =============================================================================
-# NEW JD-SPECIFIC SOFT FILTERS
-# =============================================================================
 
 def non_coding_architect_penalty(candidate: dict) -> float:
     """
@@ -546,10 +479,6 @@ def non_coding_architect_penalty(candidate: dict) -> float:
     return 1.0
 
 def langchain_wrapper_penalty(candidate: dict) -> float:
-    """
-    JD: If your 'AI experience' consists primarily of recent projects using 
-    LangChain to call OpenAI without pre-LLM-era ML production experience...
-    """
     skills = [s.get("name", "").lower() for s in candidate.get("skills", [])]
     
     has_wrapper = any(w in sk for w in ["langchain", "openai", "llama_index"] for sk in skills)
@@ -560,10 +489,7 @@ def langchain_wrapper_penalty(candidate: dict) -> float:
     return 1.0
 
 def closed_source_penalty(candidate: dict) -> float:
-    """
-    JD: People whose work has been entirely on closed-source proprietary systems 
-    for 5+ years without external validation (papers, talks, open-source).
-    """
+
     yoe = candidate.get("profile", {}).get("years_of_experience", 0)
     github_score = candidate.get("redrob_signals", {}).get("github_activity_score", -1)
     
@@ -572,19 +498,37 @@ def closed_source_penalty(candidate: dict) -> float:
     return 1.0
 
 
-# =============================================================================
+NON_TECH_SKILL_MARKERS = {
+    'content writing', 'copywriting', 'accounting', 'bookkeeping',
+    'sales', 'marketing', 'seo', 'social media', 'graphic design',
+    'photoshop', 'illustrator', 'video editing', 'photography',
+    'human resources', 'recruitment', 'hr management',
+    'event management', 'public relations', 'customer service',
+    'teaching', 'tutoring', 'coaching',
+}
+
+def keyword_stuffer_penalty(candidate: dict) -> float:
+    """Penalize candidates with non-tech skills mixed alongside ML buzzwords."""
+    skills = [s.get('name', '').lower() for s in candidate.get('skills', [])]
+    if not skills:
+        return 1.0
+    non_tech_hits = sum(1 for s in skills if s in NON_TECH_SKILL_MARKERS)
+    if non_tech_hits >= 2:
+        return 0.15
+    if non_tech_hits == 1:
+        title = candidate.get('profile', {}).get('current_title', '').lower()
+        if title not in TITLE_TIER_PERFECT:
+            return 0.4
+    return 1.0
+
+
 # Behavioral Multiplier
-# =============================================================================
 
 def get_behavioral_multiplier(candidate: dict) -> float:
-    """
-    Compute a behavioral quality multiplier from the 23 Redrob signals.
-    Penalizes unresponsive and inactive candidates.
-    """
+
     signals = candidate.get("redrob_signals", {})
     mult = 1.0
 
-    # Penalize Ghosters (inactive > 180 days AND low response rate)
     response_rate = signals.get("recruiter_response_rate", 0.5)
     last_active = signals.get("last_active_date")
     days_inactive = 0
@@ -598,13 +542,11 @@ def get_behavioral_multiplier(candidate: dict) -> float:
     if days_inactive > 180 and response_rate < 0.10:
         return 0.0  # Instant drop for Ghosters
 
-    # Normal activity penalties
     if days_inactive > 180:
         mult *= 0.5
     elif days_inactive > 90:
         mult *= 0.8
 
-    # Normal response rate penalties
     if response_rate < 0.2:
         mult *= 0.6
         
@@ -626,10 +568,8 @@ def get_behavioral_multiplier(candidate: dict) -> float:
     elif interview_rate > 0.85:
         mult *= 1.12
 
-    # ==========================================
-    # POSITIVE BOOST LOGIC
-    # ==========================================
-    
+        # POSITIVE BOOST LOGIC
+        
     # Boost 1: High demand (saved by recruiters)
     saves = signals.get("saved_by_recruiters_30d", 0)
     if saves > 10:
@@ -651,18 +591,14 @@ def get_behavioral_multiplier(candidate: dict) -> float:
     return mult
 
 
-# =============================================================================
 # MAIN RANKING PIPELINE
-# =============================================================================
 
 def rank_candidates(
     top_k: int = 100,
 ) -> list[dict]:
-    """
-    Load pre-built artifacts, compute all scoring layers, return ranked top-K.
-    """
 
-    # â”€â”€ 1. Load artifacts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+    #Load artifacts
     print("Loading artifacts ...")
     with open(CANDIDATES_META_PATH, "rb") as f:
         candidates = pickle.load(f)
@@ -677,14 +613,14 @@ def rank_candidates(
     n = len(candidates)
     print(f"  Loaded {n} candidates, FAISS index, BM25 index")
 
-    # â”€â”€ 2. Compute semantic scores (dense) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # Compute semantic scores (dense)
     print("Computing semantic scores ...")
     D, I = index.search(jd_vector, n)
     semantic_scores = np.zeros(n)
     for score, idx in zip(D[0], I[0]):
         semantic_scores[idx] = score
 
-    # â”€â”€ 3. Compute BM25 scores (sparse) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    #Compute BM25 scores (sparse) 
     print("Computing BM25 keyword scores ...")
     tokenized_query = tokenize(BM25_JD_QUERY)
     bm25_scores = bm25.get_scores(tokenized_query)
@@ -694,7 +630,7 @@ def rank_candidates(
     if bm25_max > 0:
         bm25_scores = bm25_scores / bm25_max
 
-    # â”€â”€ 4. Apply 8 scoring layers + combine â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # Apply 8 scoring layers + combine 
     print("Applying multi-layer scoring (8 layers) ...")
     scored = []
     honeypot_count = 0
@@ -718,6 +654,7 @@ def rank_candidates(
         arch_pen = non_coding_architect_penalty(candidate)
         wrapper_pen = langchain_wrapper_penalty(candidate)
         closed_pen = closed_source_penalty(candidate)
+        stuffer_pen = keyword_stuffer_penalty(candidate)
 
         f_score = compute_final_score(
             semantic_sim=semantic_scores[i],
@@ -737,6 +674,7 @@ def rank_candidates(
         f_score *= arch_pen
         f_score *= wrapper_pen
         f_score *= closed_pen
+        f_score *= stuffer_pen
 
         scored.append({
             "candidate_id": candidate["candidate_id"],
@@ -752,25 +690,21 @@ def rank_candidates(
             "research_penalty": research_pen,
             "notice_penalty": notice_pen,
             "chaser_penalty": chaser_pen,
-            # Keep reference for reasoning generation (Role 3)
             "profile": candidate.get("profile", {}),
             "skills": candidate.get("skills", []),
             "career_history": candidate.get("career_history", []),
             "redrob_signals": candidate.get("redrob_signals", {}),
         })
 
-    # â”€â”€ Normalize final scores to [0, 1] range â”€â”€â”€â”€â”€
-    # Divide by the actual maximum score in the batch to prevent any clipping at 1.0
-    # This preserves the exact relative differences between all candidates.
     max_score = max(c["final_score"] for c in scored)
     if max_score > 0:
         for c in scored:
             c["final_score"] = round(c["final_score"] / max_score, 4)
 
-    # â”€â”€ 5. Sort: score descending, tie-break on candidate_id ascending â”€â”€â”€
+    # Sort: score descending, tie-break on candidate_id ascending 
     scored.sort(key=lambda x: (-x["final_score"], x["candidate_id"]))
 
-    # â”€â”€ 6. Report â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    #Report 
     print(f"\n-- Results --")
     print(f"  Total candidates scored: {n}")
     print(f"  Honeypots detected: {honeypot_count}")
@@ -804,33 +738,17 @@ if __name__ == "__main__":
     rank_candidates()
 
 
-"""
-rank.py -- Final Ranking Script (Role 3)
-
-Produces the submission CSV from pre-computed artifacts.
-This is the script judges will run inside the 5-minute sandbox.
-
-Usage:
-    python rank.py --candidates candidates.jsonl --out submission.csv
-"""
-
 import os
 import sys
 import csv
 import time
 import argparse
 
-# Add project root to path
+#root to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-# from src.ml.scorer import rank_candidates
 
-
-# =============================================================================
 # REASONING ENGINE
-# =============================================================================
-
-# JD core requirements for connecting reasoning to the job description
 JD_CORE_SKILLS = {
     "faiss", "pinecone", "weaviate", "qdrant", "milvus", "elasticsearch",
     "sentence-transformers", "bge", "e5", "embeddings",
@@ -867,16 +785,14 @@ def generate_reasoning(candidate: dict, rank: int) -> str:
     company = profile.get("current_company", "Unknown")
     industry = profile.get("current_industry", "")
 
-    # Extract actual skill names from the candidate's profile (no hallucination)
     skill_names = [s.get("name", "").lower() for s in skills]
     skill_names_display = [s.get("name", "") for s in skills]
 
-    # Find JD-relevant skills this candidate actually has
     matched_jd_skills = []
     for s in skill_names_display:
         if s.lower() in JD_CORE_SKILLS:
             matched_jd_skills.append(s)
-    # Also check partial matches (e.g., "Machine Learning" contains "machine learning")
+
     for s in skill_names_display:
         sl = s.lower()
         for jd_skill in JD_CORE_SKILLS:
@@ -902,11 +818,11 @@ def generate_reasoning(candidate: dict, rank: int) -> str:
         if r_title and r_company:
             recent_roles.append(f"{r_title} at {r_company} ({r_duration}mo)")
 
-    # â”€â”€ Build reasoning parts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    #Build reasoning parts
 
     parts = []
 
-    # Part 1: Title + Experience + Company (always included)
+    #Title + Experience + Company (always included)
     if rank <= 10:
         parts.append(f"{title} with {yoe:.1f} years of experience currently at {company}")
     elif rank <= 50:
@@ -914,7 +830,7 @@ def generate_reasoning(candidate: dict, rank: int) -> str:
     else:
         parts.append(f"{title} ({yoe:.1f} yrs) in {location} {country}")
 
-    # Part 2: JD-relevant skills (specific facts, no hallucination)
+    #JD-relevant skills (specific facts, no hallucination)
     if matched_jd_skills:
         if rank <= 20:
             skill_str = " | ".join(matched_jd_skills[:4])
@@ -931,11 +847,11 @@ def generate_reasoning(candidate: dict, rank: int) -> str:
         else:
             parts.append("minimal JD skill alignment")
 
-    # Part 3: Career trajectory (for top candidates)
+    #Career trajectory (for top candidates)
     if recent_roles and rank <= 30:
         parts.append(f"recent experience: {recent_roles[0]}")
 
-    # Part 4: Strengths (tone matches rank)
+    #Strengths (tone matches rank)
     strengths = []
     concerns = []
 
@@ -986,28 +902,23 @@ def generate_reasoning(candidate: dict, rank: int) -> str:
     if interview_rate >= 0 and interview_rate < 0.5:
         concerns.append(f"low interview completion rate ({interview_rate:.0%})")
 
-    # Part 5: Honeypot flag
+    #Honeypot flag
     if candidate.get("is_honeypot", False):
         concerns.append("profile contains timeline inconsistencies suggesting data integrity issues")
 
-    # â”€â”€ Assemble final reasoning â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
-    # Add strengths
+    #Assemble final reasoning
     if strengths and rank <= 60:
         top_strengths = strengths[:2] if rank <= 30 else strengths[:1]
         parts.append("; ".join(top_strengths))
 
-    # Add concerns (honest acknowledgment)
+    # Add concerns
     if concerns:
         if rank <= 10:
-            # Top candidates: minor concern framing
             if len(concerns) == 1:
                 parts.append(f"minor consideration: {concerns[0]}")
         elif rank <= 50:
-            # Mid-range: balanced concern
             parts.append(f"however, {concerns[0]}")
         else:
-            # Bottom half: concerns are the main story
             concern_str = "; ".join(concerns[:2])
             parts.append(f"concerns: {concern_str}")
 
@@ -1019,9 +930,7 @@ def generate_reasoning(candidate: dict, rank: int) -> str:
     return reasoning
 
 
-# =============================================================================
 # SUBMISSION CSV WRITER
-# =============================================================================
 
 def write_submission_csv(scored_candidates: list, output_path: str):
     """
@@ -1030,12 +939,11 @@ def write_submission_csv(scored_candidates: list, output_path: str):
     """
     top_100 = scored_candidates[:100]
 
-    # Validate we have exactly 100
     if len(top_100) < 100:
         print(f"[WARN] Only {len(top_100)} candidates available (need 100)")
 
-    with open(output_path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f, quoting=csv.QUOTE_MINIMAL)
+    with open(output_path, "w", newline="\n", encoding="utf-8") as f:
+        writer = csv.writer(f, quoting=csv.QUOTE_MINIMAL, lineterminator="\n")
         writer.writerow(["candidate_id", "rank", "score", "reasoning"])
 
         prev_score = float("inf")
@@ -1043,15 +951,12 @@ def write_submission_csv(scored_candidates: list, output_path: str):
             cid = candidate["candidate_id"]
             score = round(candidate["final_score"], 4)
 
-            # Enforce non-increasing scores
             if score > prev_score:
                 score = prev_score
             prev_score = score
 
-            # Remove any accidental commas to prevent CSV quotes
             reasoning = generate_reasoning(candidate, rank).replace(",", ";")
 
-            # Format score to exactly 4 decimal places
             score_str = f"{score:.4f}"
 
             writer.writerow([cid, rank, score_str, reasoning])
@@ -1060,12 +965,9 @@ def write_submission_csv(scored_candidates: list, output_path: str):
     print(f"     Rows: {len(top_100)} + 1 header = {len(top_100) + 1} total")
 
 
-# =============================================================================
 # VALIDATION
-# =============================================================================
 
 def validate_submission(output_path: str):
-    """Run local validation checks matching the hackathon auto-validator."""
     print("\n-- Submission Validation --")
     errors = []
 
@@ -1073,11 +975,9 @@ def validate_submission(output_path: str):
         reader = csv.DictReader(f)
         rows = list(reader)
 
-    # Check 1: Exactly 100 rows
     if len(rows) != 100:
         errors.append(f"Expected 100 rows, got {len(rows)}")
 
-    # Check 2: Required columns
     expected_cols = {"candidate_id", "rank", "score", "reasoning"}
     if rows:
         actual_cols = set(rows[0].keys())
@@ -1085,39 +985,33 @@ def validate_submission(output_path: str):
         if missing:
             errors.append(f"Missing columns: {missing}")
 
-    # Check 3: Ranks 1-100, each exactly once
     ranks = [int(r["rank"]) for r in rows]
     if sorted(ranks) != list(range(1, 101)):
         errors.append("Ranks must be exactly 1-100, each used once")
 
-    # Check 4: Unique candidate_ids
     cids = [r["candidate_id"] for r in rows]
     if len(set(cids)) != len(cids):
         errors.append("Duplicate candidate_ids found")
 
-    # Check 5: candidate_id format
     import re
     for cid in cids:
         if not re.match(r"^CAND_\d{7}$", cid):
             errors.append(f"Invalid candidate_id format: {cid}")
             break
 
-    # Check 6: Non-increasing scores
     scores = [float(r["score"]) for r in rows]
     for i in range(1, len(scores)):
         if scores[i] > scores[i - 1]:
             errors.append(f"Score increases at rank {i+1}: {scores[i]} > {scores[i-1]}")
             break
 
-    # Check 7: No empty reasoning
     empty_count = sum(1 for r in rows if not r.get("reasoning", "").strip())
     if empty_count > 0:
         errors.append(f"{empty_count} rows have empty reasoning")
 
-    # Check 8: Reasoning variation (no identical strings)
     reasonings = [r.get("reasoning", "") for r in rows]
     unique_reasonings = len(set(reasonings))
-    if unique_reasonings < 90:  # Allow a tiny bit of collision
+    if unique_reasonings < 90: 
         errors.append(f"Only {unique_reasonings}/100 unique reasonings (too templated)")
 
     if errors:
@@ -1129,16 +1023,11 @@ def validate_submission(output_path: str):
         print(f"  Score range: {scores[0]:.4f} (rank 1) to {scores[-1]:.4f} (rank 100)")
         print(f"  Unique reasonings: {unique_reasonings}/100")
 
-        # Sample 3 reasonings to eyeball
         print("\n  -- Sample Reasonings --")
         for sample_rank in [1, 50, 100]:
             r = rows[sample_rank - 1]
             print(f"  Rank {sample_rank}: {r['reasoning'][:120]}...")
 
-
-# =============================================================================
-# MAIN
-# =============================================================================
 
 def main():
     parser = argparse.ArgumentParser(description="Redrob Hackathon - Produce submission CSV")
@@ -1156,15 +1045,12 @@ def main():
 
     start = time.time()
 
-    # Step 1: Run the scorer to get ranked candidates
     print("\n[Step 1] Running scoring engine ...")
     scored = rank_candidates(top_k=args.top_k)
 
-    # Step 2: Generate reasoning and write CSV
     print("\n[Step 2] Generating reasonings and writing CSV ...")
     write_submission_csv(scored, args.out)
 
-    # Step 3: Validate
     print("\n[Step 3] Validating submission ...")
     validate_submission(args.out)
 

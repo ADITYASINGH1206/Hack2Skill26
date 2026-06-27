@@ -1,26 +1,8 @@
-"""
-cleaner.py -- Phase 1: Data Ingestion & Hard Trap Filter
-
-Streams candidates.jsonl in O(1) memory and drops candidates
-that are mathematically impossible (honeypots) or completely
-irrelevant (non-technical titles).
-
-This is a PRE-COMPUTATION step that runs BEFORE embedding generation.
-It reduces the dataset size, saving compute time and disk space.
-
-Usage:
-    python -m src.data.cleaner candidates.jsonl clean_pool.jsonl
-"""
-
 import json
 import sys
 import time
 from datetime import datetime
-
-
-# =============================================================================
 # HARD DROP RULES (Binary — candidate is permanently removed)
-# =============================================================================
 
 # Non-technical titles that should never appear in an AI Engineering search.
 # These are the "keyword stuffer" traps described in the hackathon rules.
@@ -53,20 +35,10 @@ NON_TECH_TITLES = {
     "warehouse manager",
     "retail manager", "store manager",
 }
-
-
-# =============================================================================
 # HONEYPOT DETECTION (Hard Drop)
-# =============================================================================
 
 def is_honeypot(candidate: dict) -> bool:
-    """
-    Detect candidates with mathematically impossible profiles.
-    These are the ~80 honeypot candidates planted in the dataset.
-    
-    Returns True if any impossibility is detected.
-    """
-    # ── Check 1: Expert skills with 0 months duration ────────────────────
+    # Expert skills with 0 months duration
     expert_zeros = [
         s for s in candidate.get("skills", [])
         if s.get("proficiency", "").lower() in ("expert", "advanced") and s.get("duration_months", 1) == 0
@@ -74,7 +46,7 @@ def is_honeypot(candidate: dict) -> bool:
     if len(expert_zeros) >= 2:
         return True
 
-    # ── Check 2: Mass expert claims with suspiciously low durations ──────
+    # Mass expert claims with suspiciously low durations
     expert_skills = [
         s for s in candidate.get("skills", [])
         if s.get("proficiency") == "expert"
@@ -85,7 +57,7 @@ def is_honeypot(candidate: dict) -> bool:
         if avg_duration < 6:
             return True
 
-    # ── Check 3: Career duration impossibly exceeds stated experience ────
+    # Career duration impossibly exceeds stated experience
     history = candidate.get("career_history", [])
     total_career_months = sum(h.get("duration_months", 0) for h in history)
     stated_years = candidate.get("profile", {}).get("years_of_experience", 0)
@@ -93,7 +65,7 @@ def is_honeypot(candidate: dict) -> bool:
     if stated_months > 0 and total_career_months > stated_months * 1.5:
         return True
 
-    # ── Check 4: Date-math mismatch in individual roles ──────────────────
+    # Date-math mismatch in individual roles
     for role in history:
         start_str = role.get("start_date")
         end_str = role.get("end_date")
@@ -111,7 +83,7 @@ def is_honeypot(candidate: dict) -> bool:
             except (ValueError, TypeError):
                 pass
 
-    # ── Check 5: Overlapping career timelines ────────────────────────────
+    # Overlapping career timelines 
     dated_roles = []
     for role in history:
         start_str = role.get("start_date")
@@ -133,28 +105,20 @@ def is_honeypot(candidate: dict) -> bool:
         _, end_i = dated_roles[i]
         start_next, _ = dated_roles[i + 1]
         overlap_days = (end_i - start_next).days
-        if overlap_days > 60:  # > 60 days overlap = impossible
+        if overlap_days > 60:  
             return True
 
     return False
 
 
-# =============================================================================
 # NON-TECHNICAL TITLE CHECK (Hard Drop)
-# =============================================================================
 
 def is_non_technical_title(candidate: dict) -> bool:
-    """
-    Check if the candidate's current title is completely irrelevant
-    to the AI Engineering role. These are keyword-stuffer traps.
-    """
     title = candidate.get("profile", {}).get("current_title", "").lower().strip()
 
-    # Direct match against known non-tech titles
     if title in NON_TECH_TITLES:
         return True
 
-    # Partial match for common non-tech patterns
     non_tech_patterns = [
         "marketing", "hr ", "human resource", "sales",
         "customer support", "customer service",
@@ -179,16 +143,9 @@ def is_non_technical_title(candidate: dict) -> bool:
     return False
 
 
-# =============================================================================
 # WRONG DOMAIN CHECK (Hard Drop)
-# =============================================================================
 
 def is_wrong_domain(candidate: dict) -> bool:
-    """
-    If a candidate has 3+ skills in Robotics/Computer Vision/Self-Driving,
-    but ZERO skills in NLP/Retrieval/Search, drop them.
-    This prevents irrelevant AI researchers from clogging the ranks.
-    """
     skills = candidate.get("skills", [])
     if not skills:
         return False
@@ -208,15 +165,9 @@ def is_wrong_domain(candidate: dict) -> bool:
     return (cv_hits >= 3 and nlp_hits == 0)
 
 
-# =============================================================================
 # MAIN PIPELINE
-# =============================================================================
 
 def clean_candidates(input_path: str, output_path: str):
-    """
-    Stream candidates.jsonl, apply hard filters, write clean_pool.jsonl.
-    O(1) memory — processes one candidate at a time.
-    """
     print("=" * 60)
     print("  PHASE 1: DATA INGESTION & HARD TRAP FILTER")
     print("=" * 60)
@@ -279,9 +230,7 @@ def clean_candidates(input_path: str, output_path: str):
     print(f"{'=' * 60}")
 
 
-# =============================================================================
 # CLI ENTRY POINT
-# =============================================================================
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
