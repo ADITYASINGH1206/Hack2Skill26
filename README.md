@@ -16,6 +16,7 @@ During the initial sandbox evaluation, the system executes the 5-minute ranking 
 **Execute Inference Engine**
 Run the ranking script from the root directory. This script strictly utilizes pre-computed local matrices to comply with the timeout constraint:
 ```bash
+pip install -r requirements.txt
 python rank.py --candidates clean_pool.jsonl --out team_Omnivision.csv
 ```
 
