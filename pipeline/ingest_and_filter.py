@@ -179,16 +179,21 @@ def clean_candidates(input_path: str, output_path: str):
     title_dropped = 0
     kept = 0
 
-    with open(input_path, "r", encoding="utf-8") as fin, \
-         open(output_path, "w", encoding="utf-8") as fout:
+    with open(input_path, "r", encoding="utf-8") as fin:
+        if input_path.lower().endswith(".json"):
+            # Load as a single JSON array
+            candidates = json.load(fin)
+        else:
+            # Load as JSON Lines
+            candidates = []
+            for line in fin:
+                line = line.strip()
+                if line:
+                    candidates.append(json.loads(line))
 
-        for line in fin:
-            line = line.strip()
-            if not line:
-                continue
-
+    with open(output_path, "w", encoding="utf-8") as fout:
+        for candidate in candidates:
             total += 1
-            candidate = json.loads(line)
 
             # Hard Drop 1: Honeypot detection
             if is_honeypot(candidate):
@@ -205,7 +210,7 @@ def clean_candidates(input_path: str, output_path: str):
                 title_dropped += 1  # count it under same category for simplicity
                 continue
 
-            # Candidate survives — write to clean pool
+            # Candidate survives — write to clean pool as JSONL
             fout.write(json.dumps(candidate) + "\n")
             kept += 1
 
