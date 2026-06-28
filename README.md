@@ -16,8 +16,7 @@ During the initial sandbox evaluation, the system executes the 5-minute ranking 
 **Execute Inference Engine**
 Run the ranking script from the root directory. This script strictly utilizes pre-computed local matrices to comply with the timeout constraint:
 ```bash
-pip install -r requirements.txt
-python rank.py --candidates ./candidates.jsonl --out ./submission.csv
+python rank.py --candidates clean_pool.jsonl --out team_Omnivision.csv
 ```
 
 Note: Full team details, AI disclosures, and sandbox environment configurations are documented in the accompanying `submission_metadata.yaml` file.
@@ -64,6 +63,6 @@ The project has been fully flattened into a root execution tier to eliminate nes
 - `rank.py`: The core CPU inference execution script.
 - `requirements.txt`: Lightweight manifest specifying explicit runtime dependencies (faiss-cpu, pandas, rank_bm25, sentence-transformers, PyYAML).
 - `submission_metadata.yaml`: System and team metadata declaration file.
-- `submission_final.csv`: The validated output file containing the top 100 sequential candidate mappings.
+- `team_Omnivision.csv`: The validated output file containing the top 100 sequential candidate mappings.
 - `faiss_index_v2.bin` & `bm25_model_v2.pkl`: Pre-computed search artifact matrices.
 - `pipeline/`: Isolated historical development folder containing offline data engineering logic (`ingest_and_filter.py`) and programmatic structural validation checks.

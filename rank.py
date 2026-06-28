@@ -1033,7 +1033,7 @@ def main():
     parser = argparse.ArgumentParser(description="Redrob Hackathon - Produce submission CSV")
     parser.add_argument("--candidates", default="candidates.jsonl",
                         help="Path to candidates.jsonl (not used if artifacts exist)")
-    parser.add_argument("--out", default="submission.csv",
+    parser.add_argument("--out", default="team_Omnivision.csv",
                         help="Output CSV filename")
     parser.add_argument("--top-k", type=int, default=100,
                         help="Number of candidates to rank (default: 100)")
