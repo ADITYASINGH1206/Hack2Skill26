@@ -7,30 +7,30 @@
 # ============================================================================
 # Team identity
 # ============================================================================
-team_name: "your-team-name-here"  # Used in leaderboard and announcements
+team_name: "Omnivision"  # Used in leaderboard and announcements
 
 primary_contact:
-  name: "Full Name"
-  email: "primary@example.com"   # Used for all organizer communication
-  phone: "+91-XXXXXXXXXX"        # Used for top-50 / top-10 outreach
+  name: "Aditya Kumar Singh"
+  email: "simghaditya21@gmail.com"   # Used for all organizer communication
+  phone: "+91-9980383746"        # Used for top-50 / top-10 outreach
 
 team_members:
-  - name: "Member 1 Full Name"
-    email: "member1@example.com"
+  - name: "Aditya Raj Gupta"
+    email: "adityarajgupta13042006@gmail.com"
     role: "ML Engineer"          # Optional, e.g. "Team Lead", "Backend", "Data"
-  - name: "Member 2 Full Name"
-    email: "member2@example.com"
+  - name: "Sharad Polackal Sunil"
+    email: "sharadpolackalsunil2006@gmail.com"
     role: "Data Engineer"
-  # Add more members as needed; solo participants list just one member
+
 
 # ============================================================================
 # Code and reproducibility
 # ============================================================================
-github_repo: "https://github.com/YOUR_USERNAME/YOUR_REPO"
+github_repo: "https://github.com/ADITYASINGH1206/Hack2Skill26/"
 # Required. Must be reachable. Private repos OK if you can grant organizer
 # access at Stage 3 (the email to add will be communicated then).
 
-sandbox_link: "https://huggingface.co/spaces/YOUR_USERNAME/redrob-ranker"
+sandbox_link: "https://colab.research.google.com/drive/1TaRtdzSI2tufqmQ1OOeILVwZDh-kMl1R?usp=sharing"
 # Required. A working hosted environment where the ranker can be run on a small
 # candidate sample. See Section 10.5 of submission_spec.md for acceptable
 # platforms (HuggingFace Spaces, Streamlit Cloud, Replit, Colab, Docker, Binder).
@@ -43,15 +43,15 @@ reproduce_command: "python rank.py --candidates ./candidates.jsonl --out ./submi
 # Compute environment
 # ============================================================================
 compute:
-  platform: "Windows 11"                        # Or: "AWS EC2 c5.4xlarge", "Local Linux box", etc.
+  platform: "Windows 11 PC"                    # Or: "AWS EC2 c5.4xlarge", "Local Linux box", etc.
   cpu_cores: 8                                  # Number of CPU cores used
   ram_gb: 16                                    # Available RAM in GB
-  python_version: "3.10.x"                      # python --version
+  python_version: "3.12.3"                      # python --version
   os: "Windows"                                 # Or "Ubuntu 22.04 LTS", etc.
   uses_gpu_for_inference: false                 # Must be false — see compute constraints
   has_network_during_ranking: false             # Must be false — no API calls during ranking
-  pre_computation_required: true                # true if you pre-compute embeddings or train models offline
-  pre_computation_time_minutes: 5               # Approximate, if applicable (e.g. 5 min on Colab T4 GPU)
+  pre_computation_required: true               # true if you pre-compute embeddings or train models offline
+  pre_computation_time_minutes: 25               # Approximate, if applicable
 
 # ============================================================================
 # AI tools declaration
@@ -60,16 +60,15 @@ ai_tools_used:
   - "Gemini"
 
 ai_usage_summary: |
-  Used Gemini (Antigravity IDE) for pair-programming to design the architecture, implement filtering logic, and debug format validation rules. No candidate data was fed to external APIs during the 5-minute ranking window.
+  "Used Gemini for architectural research and debugging pipeline logic. No candidate data was fed to external APIs during the 5-minute ranking window."
 
 # ============================================================================
 # Approach summary (optional but recommended)
 # ============================================================================
 methodology_summary: |
-  3-phase hybrid ranking engine designed to aggressively penalize JD mismatches. 
-  Phase 1 (cleaner.py) applies hard drops for "Fake Experts" (0 months duration) and "Wrong Domains" (CV/Robotics). 
-  Phase 2 generates BGE-base semantic embeddings and a BM25 sparse index offline. 
-  Phase 3 (rank.py / scorer.py) runs under 3 seconds on CPU. It fuses FAISS semantic similarity with BM25 keyword matching, then multiplies the base score by 5 strict penalty layers: Consulting Firm traps, Job Hopper penalties, LangChain Wrapper penalties, Non-Coding Architect penalties, and Behavioral Signals (ghosters and low response rates). Ties are handled perfectly via 4-decimal rounding.
+  Our system is a highly optimized, two-phase hybrid ranking engine. 
+  Phase 1 (Offline Preprocessing): Applies strict data engineering guardrails to drop Honeypot records (structural contradictions), Title Traps (regex filtering for non-tech roles), and logistical mismatches (notice periods/experience bounds). It then generates dense semantic embeddings (Sentence-Transformers) and a BM25 sparse index offline, exporting them as binary artifacts.
+  Phase 2 (Runtime Inference - rank.py): Executes offline strictly on CPU in under 30 seconds. It loads the pre-computed arrays and calculates a composite score fusing FAISS semantic distances with BM25 lexical matches. Scores are normalized to a bounded [0,1] scale, and ties are resolved deterministically via alphanumeric sorting to ensure strict monotonicity.
 
 # ============================================================================
 # Declarations
