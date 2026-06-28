@@ -17,7 +17,7 @@ During the initial sandbox evaluation, the system executes the 5-minute ranking 
 Run the ranking script from the root directory. This script strictly utilizes pre-computed local matrices to comply with the timeout constraint:
 ```bash
 pip install -r requirements.txt
-python rank.py --candidates clean_pool.jsonl --out submission_final.csv
+python rank.py --candidates ./candidates.jsonl --out ./submission.csv
 ```
 
 Note: Full team details, AI disclosures, and sandbox environment configurations are documented in the accompanying `submission_metadata.yaml` file.
