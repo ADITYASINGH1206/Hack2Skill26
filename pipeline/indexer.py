@@ -7,15 +7,17 @@ import faiss
 from sentence_transformers import SentenceTransformer
 from rank_bm25 import BM25Okapi
 
-from src.ml.config import (
+from rank import (
     SEMANTIC_JD_QUERY,
     EMBEDDING_MODEL_NAME,
     EMBEDDING_DIMENSION,
-    DENSE_INDEX_PATH,
-    BM25_INDEX_PATH,
-    CANDIDATES_META_PATH,
-    JD_VECTOR_PATH,
 )
+
+ARTIFACTS_DIR = "artifacts"
+DENSE_INDEX_PATH = os.path.join(ARTIFACTS_DIR, "faiss_index_v2.bin")
+BM25_INDEX_PATH = os.path.join(ARTIFACTS_DIR, "bm25_model_v2.pkl")
+CANDIDATES_META_PATH = os.path.join(ARTIFACTS_DIR, "candidates_meta.pkl")
+JD_VECTOR_PATH = os.path.join(ARTIFACTS_DIR, "jd_vector.npy")
 
 def extract_text(candidate: dict) -> str:
     profile = candidate.get("profile", {})
